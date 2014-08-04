@@ -18,8 +18,8 @@ Set the development environment up as follows:
 4. Import the appcompat_v7 project from <SDKPATH>/extras/android/support/v7/appcompat.
 5. If the android project has build issues check the following:
 	- FieldtripBuffer > Properties > Android should have appcompat_v7 as a project library (the path may be incorrect, if so remove and add it).
-	- FieldtripBuffer > Properties > Java Build Path > Projects should contain JavaFieldtripBuffer.
-	- FieldtripBuffer > Properties > Java Build Path > Order and Export should have ticked the box in front of JavaFieldtripBuffer.
+	- FieldtripBuffer > Properties > Java Build Path > Projects should contain the JavaFieldtripBuffer project.
+	- FieldtripBuffer > Properties > Java Build Path > Order and Export should have ticked the box in front of the JavaFieldtripBuffer project.
 
 Plan
 ==================
