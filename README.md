@@ -1,7 +1,7 @@
 AndroidFieldtripBuffer
 ======================
 
-An Android implementation of the Fieldtrip buffer, based on the JavaFieldTripBuffer.
+An Android implementation of the Fieldtrip buffer, based on the [JavaFieldTripBuffer](https://github.com/Wieke/JavaFieldtripBuffer).
 
 Development
 =============
