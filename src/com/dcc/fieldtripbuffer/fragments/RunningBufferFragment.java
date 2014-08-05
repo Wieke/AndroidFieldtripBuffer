@@ -12,13 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.dcc.fieldtripbuffer.BufferService;
+import com.dcc.fieldtripbuffer.C;
 import com.dcc.fieldtripbuffer.R;
-import com.dcc.fieldtripbuffer.services.BufferService;
 
 public class RunningBufferFragment extends Fragment {
 	private final Context context;
-	public static final String FILTER = "com.dcc.fieldtripbuffer.RunningBufferFragment.filter";
+
+	private TextView connectionCount;
 
 	OnClickListener stopBuffer = new OnClickListener() {
 		@Override
@@ -39,16 +42,19 @@ public class RunningBufferFragment extends Fragment {
 					new StartBufferFragment(context));
 
 			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
 	};
 
-	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
-
+			if (intent.getIntExtra(C.UPDATE_TYPE, -1) == C.UPDATE_CONNECTION_COUNT) {
+				connectionCount.setText(Integer.toString(intent.getIntExtra(
+						C.DATA_COUNT, 0)));
+			}
 		}
 	};
 
@@ -63,8 +69,9 @@ public class RunningBufferFragment extends Fragment {
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		LocalBroadcastManager.getInstance(context).registerReceiver(receiver,
-				new IntentFilter(FILTER));
+		super.onCreate(savedInstanceState);
+		LocalBroadcastManager.getInstance(context).registerReceiver(
+				mMessageReceiver, new IntentFilter(C.FILTER));
 	}
 
 	@Override
@@ -74,9 +81,32 @@ public class RunningBufferFragment extends Fragment {
 				container, false);
 
 		rootView.findViewById(R.id.fragment_runningbuffer_stop)
-				.setOnClickListener(stopBuffer);
+		.setOnClickListener(stopBuffer);
 
+		connectionCount = (TextView) rootView
+				.findViewById(R.id.fragment_runningbuffer_connections);
 		return rootView;
+	}
+
+	@Override
+	public void onDestroy() {
+		LocalBroadcastManager.getInstance(context).unregisterReceiver(
+				mMessageReceiver);
+		super.onDestroy();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		LocalBroadcastManager.getInstance(context).registerReceiver(
+				mMessageReceiver, new IntentFilter(C.FILTER));
+	}
+
+	@Override
+	public void onStop() {
+		LocalBroadcastManager.getInstance(context).unregisterReceiver(
+				mMessageReceiver);
+		super.onStop();
 	}
 
 }
