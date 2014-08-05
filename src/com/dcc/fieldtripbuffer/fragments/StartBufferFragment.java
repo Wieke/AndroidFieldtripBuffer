@@ -1,20 +1,20 @@
 package com.dcc.fieldtripbuffer.fragments;
 
-import com.dcc.fieldtripbuffer.R;
-import com.dcc.fieldtripbuffer.R.id;
-import com.dcc.fieldtripbuffer.R.layout;
-import com.dcc.fieldtripbuffer.services.BufferService;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.dcc.fieldtripbuffer.BufferService;
+import com.dcc.fieldtripbuffer.C;
+import com.dcc.fieldtripbuffer.R;
 
 public class StartBufferFragment extends Fragment {
 	private final Context context;
@@ -56,6 +56,7 @@ public class StartBufferFragment extends Fragment {
 			}
 
 			// Start the buffer.
+			Log.i(C.LOGTAG, "Attempting to start Buffer Service");
 			context.startService(intent);
 
 			// Replace this fragment with the RunningBuffer Fragment.
