@@ -1,15 +1,14 @@
 package com.dcc.fieldtripbuffer;
 
-import com.dcc.fieldtripbuffer.fragments.RunningBufferFragment;
-import com.dcc.fieldtripbuffer.fragments.StartBufferFragment;
-import com.dcc.fieldtripbuffer.services.BufferService;
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.dcc.fieldtripbuffer.fragments.RunningBufferFragment;
+import com.dcc.fieldtripbuffer.fragments.StartBufferFragment;
 
 public class MainActivity extends ActionBarActivity {
 
