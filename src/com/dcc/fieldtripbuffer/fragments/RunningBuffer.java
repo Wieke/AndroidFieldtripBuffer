@@ -1,4 +1,9 @@
-package com.dcc.fieldtripbuffer;
+package com.dcc.fieldtripbuffer.fragments;
+
+import com.dcc.fieldtripbuffer.R;
+import com.dcc.fieldtripbuffer.R.id;
+import com.dcc.fieldtripbuffer.R.layout;
+import com.dcc.fieldtripbuffer.services.BufferService;
 
 import android.content.Context;
 import android.content.Intent;

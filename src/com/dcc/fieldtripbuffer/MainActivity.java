@@ -1,5 +1,9 @@
 package com.dcc.fieldtripbuffer;
 
+import com.dcc.fieldtripbuffer.fragments.RunningBuffer;
+import com.dcc.fieldtripbuffer.fragments.StartBuffer;
+import com.dcc.fieldtripbuffer.services.BufferService;
+
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.os.Bundle;

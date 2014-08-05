@@ -1,6 +1,11 @@
-package com.dcc.fieldtripbuffer;
+package com.dcc.fieldtripbuffer.services;
 
 import java.util.Locale;
+
+import com.dcc.fieldtripbuffer.MainActivity;
+import com.dcc.fieldtripbuffer.R;
+import com.dcc.fieldtripbuffer.R.drawable;
+import com.dcc.fieldtripbuffer.R.string;
 
 import android.app.PendingIntent;
 import android.app.Service;
