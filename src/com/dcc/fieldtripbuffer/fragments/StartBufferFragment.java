@@ -16,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-public class StartBuffer extends Fragment {
+public class StartBufferFragment extends Fragment {
 	private final Context context;
 
 	OnClickListener startBuffer = new OnClickListener() {
@@ -66,7 +66,7 @@ public class StartBuffer extends Fragment {
 
 			// Replace current fragment with a new RunningBuffer fragment
 			transaction.replace(R.id.activity_main_container,
-					new RunningBuffer(context));
+					new RunningBufferFragment(context));
 
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -80,7 +80,7 @@ public class StartBuffer extends Fragment {
 	 *
 	 * @param context
 	 */
-	public StartBuffer(final Context context) {
+	public StartBufferFragment(final Context context) {
 		this.context = context;
 	}
 

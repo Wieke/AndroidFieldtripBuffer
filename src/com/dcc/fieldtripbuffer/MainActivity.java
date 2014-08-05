@@ -1,7 +1,7 @@
 package com.dcc.fieldtripbuffer;
 
-import com.dcc.fieldtripbuffer.fragments.RunningBuffer;
-import com.dcc.fieldtripbuffer.fragments.StartBuffer;
+import com.dcc.fieldtripbuffer.fragments.RunningBufferFragment;
+import com.dcc.fieldtripbuffer.fragments.StartBufferFragment;
 import com.dcc.fieldtripbuffer.services.BufferService;
 
 import android.app.ActivityManager;
@@ -34,12 +34,12 @@ public class MainActivity extends ActionBarActivity {
 				getSupportFragmentManager()
 				.beginTransaction()
 				.add(R.id.activity_main_container,
-						new RunningBuffer(this)).commit();
+						new RunningBufferFragment(this)).commit();
 			} else {
 				getSupportFragmentManager()
 				.beginTransaction()
 				.add(R.id.activity_main_container,
-						new StartBuffer(this)).commit();
+						new StartBufferFragment(this)).commit();
 			}
 		}
 	}

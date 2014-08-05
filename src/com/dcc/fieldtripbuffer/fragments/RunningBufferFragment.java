@@ -1,22 +1,24 @@
 package com.dcc.fieldtripbuffer.fragments;
 
-import com.dcc.fieldtripbuffer.R;
-import com.dcc.fieldtripbuffer.R.id;
-import com.dcc.fieldtripbuffer.R.layout;
-import com.dcc.fieldtripbuffer.services.BufferService;
-
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-public class RunningBuffer extends Fragment {
+import com.dcc.fieldtripbuffer.R;
+import com.dcc.fieldtripbuffer.services.BufferService;
+
+public class RunningBufferFragment extends Fragment {
 	private final Context context;
+	public static final String FILTER = "com.dcc.fieldtripbuffer.RunningBufferFragment.filter";
 
 	OnClickListener stopBuffer = new OnClickListener() {
 		@Override
@@ -33,8 +35,8 @@ public class RunningBuffer extends Fragment {
 					.beginTransaction();
 
 			// Replace current fragment with a new RunningBuffer fragment
-			transaction.replace(R.id.activity_main_container, new StartBuffer(
-					context));
+			transaction.replace(R.id.activity_main_container,
+					new StartBufferFragment(context));
 
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -43,13 +45,26 @@ public class RunningBuffer extends Fragment {
 		}
 	};
 
+	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+
+		}
+	};
+
 	/**
 	 * Fragment for when the BufferService is running.
 	 *
 	 * @param context
 	 */
-	public RunningBuffer(final Context context) {
+	public RunningBufferFragment(final Context context) {
 		this.context = context;
+	}
+
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		LocalBroadcastManager.getInstance(context).registerReceiver(receiver,
+				new IntentFilter(FILTER));
 	}
 
 	@Override
@@ -63,4 +78,5 @@ public class RunningBuffer extends Fragment {
 
 		return rootView;
 	}
+
 }
