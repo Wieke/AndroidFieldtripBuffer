@@ -34,7 +34,7 @@ public class RunningBuffer extends Fragment {
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState) {
-		final View rootView = inflater.inflate(R.layout.fragment_startbuffer,
+		final View rootView = inflater.inflate(R.layout.fragment_runningbuffer,
 				container, false);
 
 		return rootView;

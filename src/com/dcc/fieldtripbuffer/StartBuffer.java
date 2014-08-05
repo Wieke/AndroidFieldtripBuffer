@@ -66,6 +66,8 @@ public class StartBuffer extends Fragment {
 			// the user to the startbuffer screen).
 			transaction.addToBackStack(null);
 
+			transaction
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
