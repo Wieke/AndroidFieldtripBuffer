@@ -82,7 +82,6 @@ public class MainActivity extends ActionBarActivity {
 				.commit();
 			}
 		}
-
 	}
 
 	@Override
@@ -107,25 +106,36 @@ public class MainActivity extends ActionBarActivity {
 	/**
 	 * Called when you click the Start button.
 	 */
-	@SuppressWarnings("unused")
-	private void startBuffer() {
+	public void startBuffer(View view) {
 		// Create Intent for starting the buffer.
 		final Intent intent = new Intent(this, BufferService.class);
 
 		// Grab port number and add to intent.
 		final EditText editTextPort = (EditText) findViewById(R.id.fragment_startbuffer_port);
-		intent.putExtra("port",
-				Integer.parseInt(editTextPort.getText().toString()));
+		if (editTextPort.getText().length() > 0) {
+			intent.putExtra("port",
+					Integer.parseInt(editTextPort.getText().toString()));
+		} else {
+			intent.putExtra("port", 1972);
+		}
 
 		// Grab nSamples and add to intent.
 		final EditText editTextnSamples = (EditText) findViewById(R.id.fragment_startbuffer_nSamples);
-		intent.putExtra("nSamples",
-				Integer.parseInt(editTextnSamples.getText().toString()));
+		if (editTextPort.getText().length() > 0) {
+			intent.putExtra("nSamples",
+					Integer.parseInt(editTextnSamples.getText().toString()));
+		} else {
+			intent.putExtra("nSamples", 10000);
+		}
 
 		// Grab nEvents and add to intent.
 		final EditText editTextnEvents = (EditText) findViewById(R.id.fragment_startbuffer_nEvents);
-		intent.putExtra("nEvents",
-				Integer.parseInt(editTextnEvents.getText().toString()));
+		if (editTextPort.getText().length() > 0) {
+			intent.putExtra("nEvents",
+					Integer.parseInt(editTextnEvents.getText().toString()));
+		} else {
+			intent.putExtra("nEvents", 1000);
+		}
 
 		// Start the buffer.
 		startService(intent);
@@ -149,8 +159,7 @@ public class MainActivity extends ActionBarActivity {
 	/**
 	 * Called when you click the Stop button.
 	 */
-	@SuppressWarnings("unused")
-	private void stopBuffer() {
+	public void stopBuffer(View view) {
 		// Create Intent for stopping the buffer.
 		final Intent intent = new Intent(this, BufferService.class);
 		// Stop the buffer
