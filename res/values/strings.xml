@@ -7,7 +7,7 @@
     <!-- Buffer Service -->
 	<string name="buffer_service_name">Fieldtrip Buffer</string>
 	<string name="notification_title">Fieldtrip Buffer</string>
-	<string name="notification_text">The Fieldtrip buffer is currently running on %1$.</string>
+	<string name="notification_text">Running on %s.</string>
 	
 	
 	<!-- Start Buffer Fragment -->
