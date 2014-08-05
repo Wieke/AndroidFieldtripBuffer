@@ -24,8 +24,8 @@ Set the development environment up as follows:
 Plan
 ==================
 
-- [ ] Create a service activity
-	- [ ] Ensure it keeps running even if the launcher app has been closed/destroyed
+- [x] Create a service activity
+	- [x] Ensure it keeps running even if the launcher app has been closed/destroyed
 	- [ ] Apply performance optimizations to JavaFieldtripBuffer
 - [ ] Create a launcher app.
 	- [ ] Start Buffer activity with portNumber and buffer size fields.
