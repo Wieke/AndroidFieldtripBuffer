@@ -1,32 +1,11 @@
 package com.dcc.fieldtripbuffer;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 public class MainActivity extends ActionBarActivity {
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(final LayoutInflater inflater,
-				final ViewGroup container, final Bundle savedInstanceState) {
-			final View rootView = inflater.inflate(
-					R.layout.fragment_startbuffer, container, false);
-			return rootView;
-		}
-	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -34,8 +13,9 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-			.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new StartBuffer(this)).commit();
 		}
+
 	}
 
 	@Override
