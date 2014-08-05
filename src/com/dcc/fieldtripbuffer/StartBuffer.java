@@ -23,30 +23,30 @@ public class StartBuffer extends Fragment {
 			// Grab port number and add to intent.
 			final EditText editTextPort = (EditText) getView().findViewById(
 					R.id.fragment_startbuffer_port);
-			if (editTextPort.getText().length() > 0) {
+			try {
 				intent.putExtra("port",
 						Integer.parseInt(editTextPort.getText().toString()));
-			} else {
+			} catch (final NumberFormatException e) {
 				intent.putExtra("port", 1972);
 			}
 
 			// Grab nSamples and add to intent.
 			final EditText editTextnSamples = (EditText) getView()
 					.findViewById(R.id.fragment_startbuffer_nSamples);
-			if (editTextPort.getText().length() > 0) {
+			try {
 				intent.putExtra("nSamples",
 						Integer.parseInt(editTextnSamples.getText().toString()));
-			} else {
+			} catch (final NumberFormatException e) {
 				intent.putExtra("nSamples", 10000);
 			}
 
 			// Grab nEvents and add to intent.
 			final EditText editTextnEvents = (EditText) getView().findViewById(
 					R.id.fragment_startbuffer_nEvents);
-			if (editTextPort.getText().length() > 0) {
+			try {
 				intent.putExtra("nEvents",
 						Integer.parseInt(editTextnEvents.getText().toString()));
-			} else {
+			} catch (final NumberFormatException e) {
 				intent.putExtra("nEvents", 1000);
 			}
 
