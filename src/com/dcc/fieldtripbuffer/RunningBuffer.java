@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +20,24 @@ public class RunningBuffer extends Fragment {
 			final Intent intent = new Intent(context, BufferService.class);
 			// Stop the buffer
 			context.stopService(intent);
+
+			// Replace this fragment with the StartBuffer Fragment.
+
+			// Create a fragment transaction
+			final FragmentTransaction transaction = getFragmentManager()
+					.beginTransaction();
+
+			// Replace current fragment with a new RunningBuffer fragment
+			transaction.replace(R.id.activity_main_container, new StartBuffer(
+					context));
+			// Don't add anything to the backstack (so hitting back won't return
+			// the user to the startbuffer screen).
+			transaction.addToBackStack(null);
+
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			// Commit the transaction
+			transaction.commit();
 		}
 	};
 
@@ -36,6 +55,9 @@ public class RunningBuffer extends Fragment {
 			final ViewGroup container, final Bundle savedInstanceState) {
 		final View rootView = inflater.inflate(R.layout.fragment_runningbuffer,
 				container, false);
+
+		rootView.findViewById(R.id.fragment_runningbuffer_stop)
+				.setOnClickListener(stopBuffer);
 
 		return rootView;
 	}
