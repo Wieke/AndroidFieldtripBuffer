@@ -2,7 +2,28 @@
 <resources>
 
     <string name="app_name">Fieldtrip Buffer</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+	
+    <!-- Buffer Service -->
+	<string name="buffer_service_name">Fieldtrip Buffer</string>
+	<string name="notification_title">Fieldtrip Buffer</string>
+	<string name="notification_text">The Fieldtrip buffer is currently running on %1$.</string>
+	
+	
+	<!-- Start Buffer Fragment -->
+	<string name="startbuffertitle">Start Fieldtrip Buffer</string>
+	<string name="startbufferdescription">The Fieldtrip buffer service is not running, it requeres a port and ringbuffer size, you can alter the defaults below or just hit start.</string>
+	<string name="startbufferbutton">Start</string>
+	<string name="port">Port</string>
+	<string name="ringbuffersize">Size of the ringbuffer</string>
+	<string name="nSamples">Number of Samples</string>
+	<string name="nEvents">Number of Events</string>
+	<string name="porthint">1972</string>
+	<string name="nSampleshint">10000</string>
+	<string name="nEventshint">1000</string>
+	
+	<!-- Running Buffer Fragment -->
+	<string name="stopbufferbutton">Stop Buffer</string>
+    
+    
 </resources>
