@@ -62,12 +62,9 @@ public class StartBuffer extends Fragment {
 			// Replace current fragment with a new RunningBuffer fragment
 			transaction.replace(R.id.activity_main_container,
 					new RunningBuffer(context));
-			// Don't add anything to the backstack (so hitting back won't return
-			// the user to the startbuffer screen).
-			transaction.addToBackStack(null);
 
 			transaction
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
@@ -89,7 +86,7 @@ public class StartBuffer extends Fragment {
 				container, false);
 
 		rootView.findViewById(R.id.fragment_startbuffer_start)
-				.setOnClickListener(startBuffer);
+		.setOnClickListener(startBuffer);
 
 		return rootView;
 	}

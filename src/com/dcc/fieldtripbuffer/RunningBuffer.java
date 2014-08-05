@@ -30,9 +30,6 @@ public class RunningBuffer extends Fragment {
 			// Replace current fragment with a new RunningBuffer fragment
 			transaction.replace(R.id.activity_main_container, new StartBuffer(
 					context));
-			// Don't add anything to the backstack (so hitting back won't return
-			// the user to the startbuffer screen).
-			transaction.addToBackStack(null);
 
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
