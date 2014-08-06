@@ -27,7 +27,9 @@ public final class C {
 	public static final int UPDATE_DATA_FLUSHED = 6;
 	public static final int UPDATE_EVENTS_FLUSHED = 7;
 	public static final int UPDATE_HEADER_FLUSHED = 8;
-	public static final int UPDATE_REQUEST = 9;
+	public static final int UPDATE_CLIENT_ERROR_PROTOCOL = 9;
+	public static final int UPDATE_CLIENT_ERROR_CONNECTION = 10;
+	public static final int UPDATE_REQUEST = 11;
 
 	public static final String LOGTAG = "fieldtripbuffer";
 }

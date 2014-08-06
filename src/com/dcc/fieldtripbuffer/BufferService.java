@@ -102,6 +102,26 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	}
 
 	@Override
+	public void updateClientError(final int clientID, final int errorType,
+			final long time) {
+		final Intent intent = new Intent(C.FILTER);
+		intent.putExtra(C.DATA_CLIENTID, clientID);
+		intent.putExtra(C.DATA_TIME, time);
+
+		if (errorType == FieldtripBufferMonitor.ERROR_PROTOCOL) {
+			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_PROTOCOL);
+			Log.i(C.LOGTAG, "Client " + clientID
+					+ " violates network protocol at " + time + " .");
+		} else {
+			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_CONNECTION);
+			Log.i(C.LOGTAG, "Client " + clientID
+					+ " disconnected unexpectidly at " + time + " .");
+		}
+
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+	}
+
+	@Override
 	public void updateConnectionClosed(final int clientID) {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_CLOSED);
