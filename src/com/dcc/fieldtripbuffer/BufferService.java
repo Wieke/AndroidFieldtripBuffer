@@ -112,6 +112,10 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_PROTOCOL);
 			Log.i(C.LOGTAG, "Client " + clientID
 					+ " violates network protocol at " + time + " .");
+		} else if (errorType == FieldtripBufferMonitor.ERROR_VERSION) {
+			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_VERSION);
+			Log.i(C.LOGTAG, "Client " + clientID + " has wrong version " + time
+					+ " .");
 		} else {
 			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_CONNECTION);
 			Log.i(C.LOGTAG, "Client " + clientID
