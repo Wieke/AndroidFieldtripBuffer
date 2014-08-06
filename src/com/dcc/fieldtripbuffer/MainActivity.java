@@ -31,14 +31,14 @@ public class MainActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			if (isBufferServiceRunning()) {
 				getSupportFragmentManager()
-				.beginTransaction()
-				.add(R.id.activity_main_container,
-						new RunningBufferFragment(this)).commit();
+						.beginTransaction()
+						.add(R.id.activity_main_container,
+								new RunningBufferFragment(this)).commit();
 			} else {
 				getSupportFragmentManager()
-				.beginTransaction()
-				.add(R.id.activity_main_container,
-						new StartBufferFragment(this)).commit();
+						.beginTransaction()
+						.add(R.id.activity_main_container,
+								new StartBufferFragment(this)).commit();
 			}
 		}
 	}
@@ -46,7 +46,6 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -55,10 +54,7 @@ public class MainActivity extends ActionBarActivity {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		final int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
+
 		return super.onOptionsItemSelected(item);
 	}
 
