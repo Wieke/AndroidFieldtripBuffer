@@ -1,5 +1,7 @@
 package com.dcc.fieldtripbuffer;
 
+import buffer_bci.javaserver.FieldtripBufferMonitor;
+
 /**
  * Class containing all the constants of this project.
  *
@@ -8,29 +10,36 @@ package com.dcc.fieldtripbuffer;
  */
 public final class C {
 	public static final String FILTER = "com.dcc.fieldtripbuffer.RunningBufferFragment.filter";
-	public static final String DATA_COUNT = "count";
-	public static final String DATA_CLIENTID = "clientid";
-	public static final String DATA_TIME = "time";
-	public static final String DATA_ADRESS = "adress";
-	public static final String DATA_DATATYPE = "dataType";
-	public static final String DATA_FSAMPLE = "fSample";
-	public static final String DATA_NCHANNELS = "nChannels";
 
-	public static final String UPDATE_TYPE = "update_type";
+	public static final String MESSAGE_TYPE = "a";
+	public static final String BUFFER_INFO = "b";
+	public static final String CLIENT_INFO = "c";
 
-	public static final int UPDATE_CLIENT_ACTIVITY = 0;
-	public static final int UPDATE_CONNECTION_COUNT = 1;
-	public static final int UPDATE_EVENT_COUNT = 2;
-	public static final int UPDATE_HEADER = 3;
-	public static final int UPDATE_SAMPLE_COUNT = 4;
-	public static final int UPDATE_CLIENT_CLOSED = 5;
-	public static final int UPDATE_DATA_FLUSHED = 6;
-	public static final int UPDATE_EVENTS_FLUSHED = 7;
-	public static final int UPDATE_HEADER_FLUSHED = 8;
-	public static final int UPDATE_CLIENT_ERROR_PROTOCOL = 9;
-	public static final int UPDATE_CLIENT_ERROR_CONNECTION = 10;
-	public static final int UPDATE_CLIENT_ERROR_VERSION = 11;
-	public static final int UPDATE_REQUEST = 12;
+	public static final int UPDATE_REQUEST = 0;
+	public static final int UPDATE = 1;
+
+	public static final int BUFFER_INFO_PARCEL = 0;
+	public static final int CLIENT_INFO_PARCEL = 1;
+
+	public static final int CONNECTED = 0;
+	public static final int DISCONNECTED = 1;
+	public static final int GOTSAMPLES = 2;
+	public static final int GOTEVENTS = 3;
+	public static final int GOTHEADER = 4;
+	public static final int PUTSAMPLES = 5;
+	public static final int PUTEVENTS = 6;
+	public static final int PUTHEADER = 7;
+	public static final int FLUSHSAMPLES = 8;
+	public static final int FLUSHEVENTS = 9;
+	public static final int FLUSHHEADER = 10;
+	public static final int POLL = 11;
+	public static final int WAIT = 12;
+	public static final int STOPWAITING = 13;
+
+	public static final int ERROR_NONE = -1;
+	public static final int ERROR_PROTOCOL = FieldtripBufferMonitor.ERROR_PROTOCOL;
+	public static final int ERROR_CONNECTION = FieldtripBufferMonitor.ERROR_CONNECTION;
+	public static final int ERROR_VERSION = FieldtripBufferMonitor.ERROR_VERSION;
 
 	public static final String TAG = "fieldtripbuffer";
 }

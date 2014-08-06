@@ -2,6 +2,8 @@ package com.dcc.fieldtripbuffer;
 
 import java.util.Locale;
 
+import com.dcc.fieldtripbuffer.monitor.BufferMonitor;
+
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -41,16 +43,7 @@ public class BufferService extends Service {
 		// If no buffer is running.
 		if (buffer == null) {
 
-			// Start the buffer
 			final int port = intent.getIntExtra("port", 1972);
-			// Create a buffer and start it.
-			buffer = new Buffer(port, intent.getIntExtra("nSamples", 100),
-					intent.getIntExtra("nEvents", 100));
-			monitor = new BufferMonitor(this);
-			buffer.addMonitor(monitor);
-			buffer.start();
-			monitor.start();
-			Log.i(C.TAG, "Buffer thread started.");
 
 			// Create Foreground Notification
 
@@ -69,9 +62,9 @@ public class BufferService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-					.setSmallIcon(R.drawable.ic_launcher)
-					.setContentTitle(res.getString(R.string.notification_title))
-					.setContentText(notification_text);
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setContentTitle(res.getString(R.string.notification_title))
+			.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
@@ -86,6 +79,17 @@ public class BufferService extends Service {
 			final PendingIntent resultPendingIntent = stackBuilder
 					.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder.setContentIntent(resultPendingIntent);
+
+			// Start the buffer
+			// Create a buffer and start it.
+			buffer = new Buffer(port, intent.getIntExtra("nSamples", 100),
+					intent.getIntExtra("nEvents", 100));
+			monitor = new BufferMonitor(this, ip + ":" + port,
+					System.currentTimeMillis());
+			buffer.addMonitor(monitor);
+			buffer.start();
+			monitor.start();
+			Log.i(C.TAG, "Buffer thread started.");
 
 			// Turn this service into a foreground service
 			startForeground(1, mBuilder.build());

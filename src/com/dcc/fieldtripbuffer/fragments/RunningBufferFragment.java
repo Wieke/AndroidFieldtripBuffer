@@ -42,7 +42,7 @@ public class RunningBufferFragment extends Fragment {
 					new StartBufferFragment(context));
 
 			transaction
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
@@ -51,10 +51,7 @@ public class RunningBufferFragment extends Fragment {
 	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
-			if (intent.getIntExtra(C.UPDATE_TYPE, -1) == C.UPDATE_CONNECTION_COUNT) {
-				connectionCount.setText(Integer.toString(intent.getIntExtra(
-						C.DATA_COUNT, 0)));
-			}
+
 		}
 	};
 
@@ -81,7 +78,7 @@ public class RunningBufferFragment extends Fragment {
 				container, false);
 
 		rootView.findViewById(R.id.fragment_runningbuffer_stop)
-		.setOnClickListener(stopBuffer);
+				.setOnClickListener(stopBuffer);
 
 		connectionCount = (TextView) rootView
 				.findViewById(R.id.fragment_runningbuffer_connections);
