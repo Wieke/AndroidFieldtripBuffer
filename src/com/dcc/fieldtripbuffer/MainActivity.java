@@ -31,14 +31,14 @@ public class MainActivity extends ActionBarActivity {
 		if (savedInstanceState == null) {
 			if (isBufferServiceRunning()) {
 				getSupportFragmentManager()
-						.beginTransaction()
-						.add(R.id.activity_main_container,
-								new RunningBufferFragment(this)).commit();
+				.beginTransaction()
+				.add(R.id.activity_main_container,
+						new RunningBufferFragment()).commit();
 			} else {
 				getSupportFragmentManager()
-						.beginTransaction()
-						.add(R.id.activity_main_container,
-								new StartBufferFragment(this)).commit();
+				.beginTransaction()
+				.add(R.id.activity_main_container,
+						new StartBufferFragment()).commit();
 			}
 		}
 	}
