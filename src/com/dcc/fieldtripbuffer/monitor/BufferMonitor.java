@@ -49,6 +49,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.timeLastActivity = time;
 		client.lastActivity = C.DISCONNECTED;
 		client.changed = true;
+		client.time = time;
 		change = true;
 	}
 
@@ -72,6 +73,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.error = errorType;
 		client.connected = false;
 		client.changed = true;
+		client.time = time;
 		change = true;
 	}
 
@@ -118,6 +120,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.lastActivity = C.GOTEVENTS;
 		client.eventsGotten += count;
 		client.changed = true;
+		client.diff = count;
 		change = true;
 	}
 
@@ -138,6 +141,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.samplesGotten += count;
 		client.lastActivity = C.GOTSAMPLES;
 		client.changed = true;
+		client.diff = count;
 		change = true;
 	}
 
@@ -168,6 +172,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nEvents = count;
 		client.changed = true;
 		info.changed = true;
+		client.diff = diff;
 		change = true;
 	}
 
@@ -195,6 +200,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nSamples = count;
 		client.changed = true;
 		info.changed = true;
+		client.diff = diff;
 		change = true;
 	}
 
@@ -265,7 +271,9 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		}
 
 		if (clientInfo.size() > 0) {
-			intent.putExtra(C.CLIENT_INFO, clientInfo);
+			intent.putExtra(C.CLIENT_INFO,
+					clientInfo.toArray(new ClientInfo[clientInfo.size()]));
+			Log.i(C.TAG, "Including Client Info in update.");
 		}
 
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

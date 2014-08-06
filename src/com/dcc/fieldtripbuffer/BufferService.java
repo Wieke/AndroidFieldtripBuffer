@@ -2,8 +2,6 @@ package com.dcc.fieldtripbuffer;
 
 import java.util.Locale;
 
-import com.dcc.fieldtripbuffer.monitor.BufferMonitor;
-
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -15,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import buffer_bci.javaserver.Buffer;
+
+import com.dcc.fieldtripbuffer.monitor.BufferMonitor;
 
 public class BufferService extends Service {
 
@@ -62,9 +62,9 @@ public class BufferService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle(res.getString(R.string.notification_title))
-			.setContentText(notification_text);
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(res.getString(R.string.notification_title))
+					.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);

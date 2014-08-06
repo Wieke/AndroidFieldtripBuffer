@@ -17,9 +17,11 @@ public class ClientInfo implements Parcelable {
 	public int waitSamples = -1;
 	public int error = -1;
 	public long timeLastActivity = 0;
+	public long time = 0;
 	public long waitTimeout = -1;
 	public boolean connected = true;
 	public boolean changed = true;
+	public int diff = 0;
 
 	public static final Parcelable.Creator<ClientInfo> CREATOR = new Parcelable.Creator<ClientInfo>() {
 		@Override
@@ -34,8 +36,8 @@ public class ClientInfo implements Parcelable {
 	};
 
 	private ClientInfo(final Parcel in) {
-		final int[] integers = new int[9];
-		final long[] longs = new long[2];
+		final int[] integers = new int[10];
+		final long[] longs = new long[3];
 
 		adress = in.readString();
 		in.readIntArray(integers);
@@ -51,15 +53,18 @@ public class ClientInfo implements Parcelable {
 		waitEvents = integers[6];
 		waitSamples = integers[7];
 		error = integers[8];
+		diff = integers[9];
 
 		timeLastActivity = longs[0];
 		waitTimeout = longs[1];
+		time = longs[2];
 	}
 
 	public ClientInfo(final String adress, final int clientID, final long time) {
 		this.adress = adress;
 		this.clientID = clientID;
 		timeLastActivity = time;
+		this.time = time;
 	}
 
 	@Override
@@ -68,12 +73,34 @@ public class ClientInfo implements Parcelable {
 	}
 
 	@Override
+	public String toString() {
+		return adress;
+	}
+
+	public void update(final ClientInfo update) {
+		samplesGotten = update.samplesGotten;
+		samplesPut = update.samplesPut;
+		eventsGotten = update.eventsGotten;
+		eventsPut = update.eventsPut;
+		lastActivity = update.lastActivity;
+		waitEvents = update.waitEvents;
+		waitSamples = update.waitSamples;
+		error = update.error;
+		timeLastActivity = update.timeLastActivity;
+		time = update.time;
+		waitTimeout = update.waitTimeout;
+		connected = update.connected;
+		changed = update.changed;
+		diff = update.diff;
+	}
+
+	@Override
 	public void writeToParcel(final Parcel out, final int flags) {
 		// Gathering data
 		final int[] integers = new int[] { clientID, samplesGotten, samplesPut,
 				eventsGotten, eventsPut, lastActivity, waitEvents, waitSamples,
-				error };
-		final long[] longs = new long[] { timeLastActivity, waitTimeout };
+				error, diff };
+		final long[] longs = new long[] { timeLastActivity, waitTimeout, time };
 
 		// Write it to parcel
 		out.writeString(adress);
