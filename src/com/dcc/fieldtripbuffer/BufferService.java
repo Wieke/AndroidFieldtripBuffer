@@ -135,17 +135,14 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	}
 
 	@Override
-	public void updateConnectionOpened(final int clientID, final String adress,
-			final int count) {
+	public void updateConnectionOpened(final int clientID, final String adress) {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CONNECTION_COUNT);
-		intent.putExtra(C.DATA_COUNT, count);
 		intent.putExtra(C.DATA_ADRESS, adress);
 		intent.putExtra(C.DATA_CLIENTID, clientID);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 		Log.i(C.LOGTAG, "Client " + clientID + " opened connection at "
-				+ adress + "\nCurrently there are " + count
-				+ " open connections");
+				+ adress);
 	}
 
 	@Override
