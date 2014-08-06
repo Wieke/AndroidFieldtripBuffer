@@ -25,6 +25,10 @@ public class StartBufferFragment extends Fragment {
 			// Create Intent for starting the buffer.
 			final Intent intent = new Intent(context, BufferService.class);
 
+			if (getView() == null) {
+				return;
+			}
+
 			// Grab port number and add to intent.
 			final EditText editTextPort = (EditText) getView().findViewById(
 					R.id.fragment_startbuffer_port);
@@ -92,7 +96,7 @@ public class StartBufferFragment extends Fragment {
 				container, false);
 
 		rootView.findViewById(R.id.fragment_startbuffer_start)
-		.setOnClickListener(startBuffer);
+				.setOnClickListener(startBuffer);
 
 		return rootView;
 	}
