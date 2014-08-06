@@ -68,7 +68,7 @@ public class BufferService extends Service {
 			wakeLock.acquire();
 
 			final WifiManager wifiMan = (WifiManager) getSystemService(WIFI_SERVICE);
-			wifiMan.createWifiLock(C.WAKELOCKTAGWIFI);
+			wifiLock = wifiMan.createWifiLock(C.WAKELOCKTAGWIFI);
 			wifiLock.acquire();
 
 			// Create Foreground Notification
@@ -87,9 +87,9 @@ public class BufferService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-					.setSmallIcon(R.drawable.ic_launcher)
-					.setContentTitle(res.getString(R.string.notification_title))
-					.setContentText(notification_text);
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setContentTitle(res.getString(R.string.notification_title))
+			.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
