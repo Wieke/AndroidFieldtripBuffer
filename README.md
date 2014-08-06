@@ -31,14 +31,14 @@ Plan
 - [x] Create a launcher app.
 	- [x] Start Buffer activity with portNumber and buffer size fields.
 	- [x] Show/check if buffer is already running.
-- [ ] Optional stuff: add some basic monitoring things.
-	- [ ] Uptime
-	- [ ] Number of open connections
-		- [ ] List of open connections
-			- [ ] Last time of activity of each connection
-	- [ ] Number of samples
-	- [ ] Number of events
-	- [ ] Basic Header information (dataType, number of channels, sampling frequency
-		- [ ] Channel names
+- [x] Optional stuff: add some basic monitoring things.
+	- [x] Uptime
+	- [x] Number of open connections
+		- [x] List of open connections
+			- [x] Last time of activity of each connection
+	- [x] Number of samples
+	- [x] Number of events
+	- [x] Basic Header information (dataType, number of channels, sampling frequency
+		- [x] Channel names
 	- [ ] List of last X events
 	- [ ] List of last X samples
