@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -20,6 +23,8 @@ public class BufferService extends Service {
 
 	private Buffer buffer;
 	private BufferMonitor monitor;
+	private WakeLock wakeLock;
+	private WifiLock wifiLock;
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -32,8 +37,18 @@ public class BufferService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.i(C.TAG, "Stopping Buffer Service.");
-		buffer.stopBuffer();
-		monitor.stopMonitoring();
+		if (buffer != null) {
+			buffer.stopBuffer();
+		}
+		if (monitor != null) {
+			monitor.stopMonitoring();
+		}
+		if (wakeLock != null) {
+			wakeLock.release();
+		}
+		if (wifiLock != null) {
+			wifiLock.release();
+		}
 	}
 
 	@Override
@@ -45,10 +60,20 @@ public class BufferService extends Service {
 
 			final int port = intent.getIntExtra("port", 1972);
 
+			// Get Wakelocks
+
+			final PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+			wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+					C.WAKELOCKTAG);
+			wakeLock.acquire();
+
+			final WifiManager wifiMan = (WifiManager) getSystemService(WIFI_SERVICE);
+			wifiMan.createWifiLock(C.WAKELOCKTAGWIFI);
+			wifiLock.acquire();
+
 			// Create Foreground Notification
 
 			// Get the currently used ip-adress
-			final WifiManager wifiMan = (WifiManager) getSystemService(WIFI_SERVICE);
 			final WifiInfo wifiInf = wifiMan.getConnectionInfo();
 			final int ipAddress = wifiInf.getIpAddress();
 			final String ip = String.format(Locale.ENGLISH, "%d.%d.%d.%d",
@@ -80,13 +105,14 @@ public class BufferService extends Service {
 					.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder.setContentIntent(resultPendingIntent);
 
-			// Start the buffer
 			// Create a buffer and start it.
 			buffer = new Buffer(port, intent.getIntExtra("nSamples", 100),
 					intent.getIntExtra("nEvents", 100));
 			monitor = new BufferMonitor(this, ip + ":" + port,
 					System.currentTimeMillis());
 			buffer.addMonitor(monitor);
+
+			// Start the buffer and Monitor
 			buffer.start();
 			monitor.start();
 			Log.i(C.TAG, "Buffer thread started.");

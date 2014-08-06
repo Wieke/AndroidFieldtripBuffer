@@ -27,7 +27,7 @@ Plan
 - [x] Create a service activity
 	- [x] Ensure it keeps running even if the launcher app has been closed/destroyed
 	- [ ] Apply performance optimizations to JavaFieldtripBuffer
-	- [ ] Add the wakelocks.
+	- [x] Add the wakelocks.
 - [x] Create a launcher app.
 	- [x] Start Buffer activity with portNumber and buffer size fields.
 	- [x] Show/check if buffer is already running.

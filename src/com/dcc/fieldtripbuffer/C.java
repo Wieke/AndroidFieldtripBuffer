@@ -42,4 +42,8 @@ public final class C {
 	public static final int ERROR_VERSION = FieldtripBufferMonitor.ERROR_VERSION;
 
 	public static final String TAG = "fieldtripbuffer";
+
+	public static final String WAKELOCKTAG = "com.dcc.fieldtripbuffer.RunningBufferFragment.wakelock";
+
+	public static final String WAKELOCKTAGWIFI = "com.dcc.fieldtripbuffer.RunningBufferFragment.wakelockwifi";
 }
