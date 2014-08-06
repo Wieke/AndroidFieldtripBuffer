@@ -1,7 +1,9 @@
 package com.dcc.fieldtripbuffer;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import buffer_bci.javaserver.FieldtripBufferMonitor;
@@ -11,8 +13,20 @@ class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 	private boolean run;
 	private final Context context;
 
+	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			if (intent.getIntExtra(C.UPDATE_TYPE, -1) == C.UPDATE_REQUEST) {
+				sendRequestedUpdate();
+			}
+		}
+
+	};
+
 	public BufferMonitor(final Context context) {
 		this.context = context;
+		LocalBroadcastManager.getInstance(context).registerReceiver(
+				mMessageReceiver, new IntentFilter(C.FILTER));
 	}
 
 	@Override
@@ -22,8 +36,15 @@ class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		}
 	}
 
+	private void sendRequestedUpdate() {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void stopMonitoring() {
 		run = false;
+		LocalBroadcastManager.getInstance(context).unregisterReceiver(
+				mMessageReceiver);
 	}
 
 	@Override
