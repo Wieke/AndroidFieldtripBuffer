@@ -30,6 +30,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	 */
 	@Override
 	public void onDestroy() {
+		Log.i(C.TAG, "Stopping Buffer Service.");
 		buffer.stopBuffer();
 	}
 
@@ -141,8 +142,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_ADRESS, adress);
 		intent.putExtra(C.DATA_CLIENTID, clientID);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.TAG, "Client " + clientID + " opened connection at "
-				+ adress);
+		Log.i(C.TAG, "Client " + clientID + " opened connection at " + adress);
 	}
 
 	@Override
@@ -179,8 +179,8 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_FSAMPLE, fSample);
 		intent.putExtra(C.DATA_NCHANNELS, nChannels);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.TAG, "New Header: dataType " + dataType + " fSample "
-				+ fSample + " nCHannels " + nChannels);
+		Log.i(C.TAG, "New Header: dataType " + dataType + " fSample " + fSample
+				+ " nCHannels " + nChannels);
 	}
 
 	@Override
