@@ -60,7 +60,7 @@ public class StartBufferFragment extends Fragment {
 			}
 
 			// Start the buffer.
-			Log.i(C.LOGTAG, "Attempting to start Buffer Service");
+			Log.i(C.TAG, "Attempting to start Buffer Service");
 			context.startService(intent);
 
 			// Replace this fragment with the RunningBuffer Fragment.

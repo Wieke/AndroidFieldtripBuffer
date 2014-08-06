@@ -36,7 +36,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	@Override
 	public int onStartCommand(final Intent intent, final int flags,
 			final int startId) {
-		Log.i(C.LOGTAG, "Buffer Service Running");
+		Log.i(C.TAG, "Buffer Service Running");
 		// If no buffer is running.
 		if (buffer == null) {
 
@@ -47,7 +47,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 					intent.getIntExtra("nEvents", 100));
 			buffer.addMonitor(this);
 			buffer.start();
-			Log.i(C.LOGTAG, "Buffer thread started.");
+			Log.i(C.TAG, "Buffer thread started.");
 
 			// Create Foreground Notification
 
@@ -86,7 +86,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 
 			// Turn this service into a foreground service
 			startForeground(1, mBuilder.build());
-			Log.i(C.LOGTAG, "Fieldtrip Buffer Service moved to foreground.");
+			Log.i(C.TAG, "Fieldtrip Buffer Service moved to foreground.");
 		}
 		return START_NOT_STICKY;
 	}
@@ -98,7 +98,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_CLIENTID, clientID);
 		intent.putExtra(C.DATA_TIME, time);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Client " + clientID + " active at " + time);
+		Log.i(C.TAG, "Client " + clientID + " active at " + time);
 	}
 
 	@Override
@@ -110,15 +110,15 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 
 		if (errorType == FieldtripBufferMonitor.ERROR_PROTOCOL) {
 			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_PROTOCOL);
-			Log.i(C.LOGTAG, "Client " + clientID
+			Log.i(C.TAG, "Client " + clientID
 					+ " violates network protocol at " + time + " .");
 		} else if (errorType == FieldtripBufferMonitor.ERROR_VERSION) {
 			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_VERSION);
-			Log.i(C.LOGTAG, "Client " + clientID + " has wrong version " + time
+			Log.i(C.TAG, "Client " + clientID + " has wrong version " + time
 					+ " .");
 		} else {
 			intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_ERROR_CONNECTION);
-			Log.i(C.LOGTAG, "Client " + clientID
+			Log.i(C.TAG, "Client " + clientID
 					+ " disconnected unexpectidly at " + time + " .");
 		}
 
@@ -131,7 +131,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_CLIENT_CLOSED);
 		intent.putExtra(C.DATA_CLIENTID, clientID);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Client " + clientID + " closed connection.");
+		Log.i(C.TAG, "Client " + clientID + " closed connection.");
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_ADRESS, adress);
 		intent.putExtra(C.DATA_CLIENTID, clientID);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Client " + clientID + " opened connection at "
+		Log.i(C.TAG, "Client " + clientID + " opened connection at "
 				+ adress);
 	}
 
@@ -150,7 +150,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_DATA_FLUSHED);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Events Flushed");
+		Log.i(C.TAG, "Events Flushed");
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_EVENT_COUNT);
 		intent.putExtra(C.DATA_COUNT, count);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Event Count currently " + count);
+		Log.i(C.TAG, "Event Count currently " + count);
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_EVENTS_FLUSHED);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Events Flushed");
+		Log.i(C.TAG, "Events Flushed");
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_FSAMPLE, fSample);
 		intent.putExtra(C.DATA_NCHANNELS, nChannels);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "New Header: dataType " + dataType + " fSample "
+		Log.i(C.TAG, "New Header: dataType " + dataType + " fSample "
 				+ fSample + " nCHannels " + nChannels);
 	}
 
@@ -188,7 +188,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_HEADER_FLUSHED);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Header Flushed");
+		Log.i(C.TAG, "Header Flushed");
 	}
 
 	@Override
@@ -197,6 +197,6 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_SAMPLE_COUNT);
 		intent.putExtra(C.DATA_COUNT, count);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Sample Count currently " + count);
+		Log.i(C.TAG, "Sample Count currently " + count);
 	}
 }
