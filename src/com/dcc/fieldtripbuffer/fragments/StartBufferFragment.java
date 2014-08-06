@@ -1,6 +1,5 @@
 package com.dcc.fieldtripbuffer.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,13 +16,11 @@ import com.dcc.fieldtripbuffer.C;
 import com.dcc.fieldtripbuffer.R;
 
 public class StartBufferFragment extends Fragment {
-	private final Context context;
-
 	OnClickListener startBuffer = new OnClickListener() {
 		@Override
 		public void onClick(final View v) {
 			// Create Intent for starting the buffer.
-			final Intent intent = new Intent(context, BufferService.class);
+			final Intent intent = new Intent(getActivity(), BufferService.class);
 
 			if (getView() == null) {
 				return;
@@ -61,7 +58,7 @@ public class StartBufferFragment extends Fragment {
 
 			// Start the buffer.
 			Log.i(C.TAG, "Attempting to start Buffer Service");
-			context.startService(intent);
+			getActivity().startService(intent);
 
 			// Replace this fragment with the RunningBuffer Fragment.
 
@@ -71,23 +68,14 @@ public class StartBufferFragment extends Fragment {
 
 			// Replace current fragment with a new RunningBuffer fragment
 			transaction.replace(R.id.activity_main_container,
-					new RunningBufferFragment(context));
+					new RunningBufferFragment());
 
 			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
 	};
-
-	/**
-	 * Fragment for starting the BufferService.
-	 *
-	 * @param context
-	 */
-	public StartBufferFragment(final Context context) {
-		this.context = context;
-	}
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
@@ -96,7 +84,7 @@ public class StartBufferFragment extends Fragment {
 				container, false);
 
 		rootView.findViewById(R.id.fragment_startbuffer_start)
-				.setOnClickListener(startBuffer);
+		.setOnClickListener(startBuffer);
 
 		return rootView;
 	}
