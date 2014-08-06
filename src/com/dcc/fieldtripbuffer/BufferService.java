@@ -66,9 +66,9 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle(res.getString(R.string.notification_title))
-			.setContentText(notification_text);
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(res.getString(R.string.notification_title))
+					.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
@@ -127,7 +127,7 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	@Override
 	public void updateDataFlushed() {
 		final Intent intent = new Intent(C.FILTER);
-		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_EVENTS_FLUSHED);
+		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_DATA_FLUSHED);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 		Log.i(C.LOGTAG, "Events Flushed");
 	}
@@ -142,7 +142,15 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 	}
 
 	@Override
-	public void updateHeader(final int dataType, final int fSample,
+	public void updateEventsFlushed() {
+		final Intent intent = new Intent(C.FILTER);
+		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_EVENTS_FLUSHED);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+		Log.i(C.LOGTAG, "Events Flushed");
+	}
+
+	@Override
+	public void updateHeader(final int dataType, final float fSample,
 			final int nChannels) {
 		final Intent intent = new Intent(C.FILTER);
 		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_HEADER);
@@ -169,13 +177,5 @@ public class BufferService extends Service implements FieldtripBufferMonitor {
 		intent.putExtra(C.DATA_COUNT, count);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 		Log.i(C.LOGTAG, "Sample Count currently " + count);
-	}
-
-	@Override
-	public void updateSamplesFlushed() {
-		final Intent intent = new Intent(C.FILTER);
-		intent.putExtra(C.UPDATE_TYPE, C.UPDATE_DATA_FLUSHED);
-		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-		Log.i(C.LOGTAG, "Data Flushed");
 	}
 }
