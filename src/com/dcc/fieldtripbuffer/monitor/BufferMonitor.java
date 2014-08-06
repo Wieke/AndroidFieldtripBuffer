@@ -39,6 +39,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 				mMessageReceiver, new IntentFilter(C.FILTER));
 		setName("Fieldtrip Buffer Monitor");
 		info = new BufferInfo(adress, startTime);
+		Log.i(C.TAG, "Created Monitor.");
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.timeLastActivity = time;
 		client.lastActivity = C.DISCONNECTED;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -59,6 +61,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.waitSamples = -1;
 		client.waitTimeout = -1;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -69,6 +72,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.error = errorType;
 		client.connected = false;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -79,6 +83,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nSamples = 0;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -89,6 +94,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nEvents = 0;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -101,6 +107,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.dataType = -1;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -111,6 +118,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.lastActivity = C.GOTEVENTS;
 		client.eventsGotten += count;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -119,6 +127,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.timeLastActivity = time;
 		client.lastActivity = C.GOTHEADER;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -129,6 +138,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.samplesGotten += count;
 		client.lastActivity = C.GOTSAMPLES;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -136,6 +146,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 			final long time) {
 		final ClientInfo client = new ClientInfo(adress, clientID, time);
 		clients.put(clientID, client);
+		change = true;
 	}
 
 	@Override
@@ -144,6 +155,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.timeLastActivity = time;
 		client.lastActivity = C.POLL;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -156,6 +168,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nEvents = count;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -169,6 +182,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nChannels = nChannels;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -181,6 +195,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		info.nSamples = count;
 		client.changed = true;
 		info.changed = true;
+		change = true;
 	}
 
 	@Override
@@ -193,6 +208,7 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 		client.waitEvents = nEvents;
 		client.waitTimeout = timeout;
 		client.changed = true;
+		change = true;
 	}
 
 	@Override
