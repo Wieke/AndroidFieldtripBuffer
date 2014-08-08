@@ -168,6 +168,11 @@ public class RunningBufferFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 		LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
 				mMessageReceiver, new IntentFilter(C.FILTER));
+		if (savedInstanceState != null) {
+			buffer = savedInstanceState.getParcelable(C.BUFFER_INFO);
+			clients = savedInstanceState
+					.getSparseParcelableArray(C.CLIENT_INFO);
+		}
 	}
 
 	@Override
@@ -198,19 +203,15 @@ public class RunningBufferFragment extends Fragment {
 		clientList = (ListView) rootView
 				.findViewById(R.id.fragment_runningbuffer_clientinfo);
 
-		// TESTING STUFF GODDAMN LISTVIEWS
-
-		adapter = new ClientInfoAdapter(getActivity(),
-				R.layout.clientinfo_list_item, clientsArray);
-
-		clientList.setAdapter(adapter);
-
 		// If there is a saved instance we will immediatly update the view
 		// elements
 		if (savedInstanceState != null) {
 			buffer = savedInstanceState.getParcelable(C.BUFFER_INFO);
 			clients = savedInstanceState
 					.getSparseParcelableArray(C.CLIENT_INFO);
+			for (int i = 0; i < clients.size(); i++) {
+				clientsArray.add(clients.valueAt(i));
+			}
 			initialUpdate();
 			updateBufferInfo();
 		} else {
@@ -222,6 +223,11 @@ public class RunningBufferFragment extends Fragment {
 			LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
 					intent);
 		}
+
+		adapter = new ClientInfoAdapter(getActivity(),
+				R.layout.clientinfo_list_item, clientsArray);
+
+		clientList.setAdapter(adapter);
 
 		return rootView;
 	}
