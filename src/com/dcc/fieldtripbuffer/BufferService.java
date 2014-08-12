@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.wifi.WifiInfo;
@@ -16,7 +17,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import buffer_bci.javaserver.Buffer;
-
 import com.dcc.fieldtripbuffer.monitor.BufferMonitor;
 
 public class BufferService extends Service {
@@ -25,6 +25,7 @@ public class BufferService extends Service {
 	private BufferMonitor monitor;
 	private WakeLock wakeLock;
 	private WifiLock wifiLock;
+
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -59,7 +60,6 @@ public class BufferService extends Service {
 		if (buffer == null) {
 
 			final int port = intent.getIntExtra("port", 1972);
-
 			// Get Wakelocks
 
 			final PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
