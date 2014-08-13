@@ -42,4 +42,4 @@ Plan
 		- [x] Channel names
 	- [ ] List of last X events
 	- [ ] List of last X samples
-- [ ] Fix wait monitor bug.
+- [x] Fix wait monitor bug.
