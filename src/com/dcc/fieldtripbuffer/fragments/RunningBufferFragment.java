@@ -128,7 +128,7 @@ public class RunningBufferFragment extends Fragment {
 					new StartBufferFragment());
 
 			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			// Commit the transaction
 			transaction.commit();
 		}
@@ -194,11 +194,11 @@ public class RunningBufferFragment extends Fragment {
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(final DialogInterface dialog,
-					final int whichButton) {
-			}
-		});
+					@Override
+					public void onClick(final DialogInterface dialog,
+							final int whichButton) {
+					}
+				});
 
 		alert.show();
 	}
@@ -236,7 +236,7 @@ public class RunningBufferFragment extends Fragment {
 
 		// Adding a clicklistener to the button
 		rootView.findViewById(R.id.fragment_runningbuffer_stop)
-				.setOnClickListener(stopBuffer);
+		.setOnClickListener(stopBuffer);
 
 		// Grabbing all the view elements we will need to update
 		adress = (TextView) rootView
@@ -341,19 +341,23 @@ public class RunningBufferFragment extends Fragment {
 		final Resources res = getResources();
 		if (buffer.fSample != -1 && buffer.nChannels != -1) {
 
-			dataType.setText(res.getString(R.string.datatype)
+			dataType.setText(res.getString(R.string.datatype) + " "
 					+ dataTypeToString(buffer.dataType, res));
 			nChannels.setText(Html.fromHtml(res
 					.getString(R.string.numberofchannels)
+					+ " "
 					+ Integer.toString(buffer.nChannels)));
 			fSample.setText(Html.fromHtml(res
 					.getString(R.string.samplingfrequency)
+					+ " "
 					+ Float.toString(buffer.fSample)));
 			nEvents.setText(Html.fromHtml(res
 					.getString(R.string.numberofevents)
+					+ " "
 					+ Integer.toString(buffer.nEvents)));
 			nSamples.setText(Html.fromHtml(res
 					.getString(R.string.numberofsamples)
+					+ " "
 					+ Integer.toString(buffer.nSamples)));
 
 		} else {
