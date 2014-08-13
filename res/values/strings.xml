@@ -31,6 +31,14 @@
     <string name="datatype">Data type: </string>
     <string name="uptime">Uptime</string>
     <string name="noheader">No header.</string>
+    <string name="dummyheader">Put dummy header</string>
+    <string name="flushheader">Flush header</string>
+    <string name="flushsamples">Flush samples</string>
+    <string name="flushevents">Flush events</string>
+    <string name="confirmation">Flush confirmation</string>
+    <string name="confirmationflushheader">Are you sure you wish to flush the header?</string>
+    <string name="confirmationflushsamples">Are you sure you wish to flush the samples?</string>
+    <string name="confirmationflushevents">Are you sure you wish to flush the events?</string>
     
     <!-- ClientInfo items -->
     <string name="connected">Opened</string>

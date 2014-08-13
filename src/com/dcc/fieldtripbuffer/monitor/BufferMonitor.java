@@ -23,7 +23,6 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 				sendAllInfo();
 			}
 		}
-
 	};
 
 	private boolean run = true;
@@ -44,70 +43,82 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 
 	@Override
 	public void clientClosedConnection(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.connected = false;
-		client.timeLastActivity = time;
-		client.lastActivity = C.DISCONNECTED;
-		client.changed = true;
-		client.time = time;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.connected = false;
+			client.timeLastActivity = time;
+			client.lastActivity = C.DISCONNECTED;
+			client.changed = true;
+			client.time = time;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientContinues(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.STOPWAITING;
-		client.waitEvents = -1;
-		client.waitSamples = -1;
-		client.waitTimeout = -1;
-		client.changed = true;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.STOPWAITING;
+			client.waitEvents = -1;
+			client.waitSamples = -1;
+			client.waitTimeout = -1;
+			client.changed = true;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientError(final int clientID, final int errorType,
 			final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.error = errorType;
-		client.connected = false;
-		client.changed = true;
-		client.time = time;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.error = errorType;
+			client.connected = false;
+			client.changed = true;
+			client.time = time;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientFlushedData(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.FLUSHSAMPLES;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.FLUSHSAMPLES;
+			client.changed = true;
+		}
 		info.nSamples = 0;
-		client.changed = true;
 		info.changed = true;
 		change = true;
 	}
 
 	@Override
 	public void clientFlushedEvents(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.FLUSHEVENTS;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.FLUSHEVENTS;
+			client.changed = true;
+		}
 		info.nEvents = 0;
-		client.changed = true;
 		info.changed = true;
 		change = true;
 	}
 
 	@Override
 	public void clientFlushedHeader(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.FLUSHHEADER;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.FLUSHHEADER;
+			client.changed = true;
+		}
 		info.fSample = -1;
 		info.nChannels = -1;
 		info.dataType = -1;
-		client.changed = true;
 		info.changed = true;
 		change = true;
 	}
@@ -115,77 +126,91 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 	@Override
 	public void clientGetEvents(final int count, final int clientID,
 			final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.GOTEVENTS;
-		client.eventsGotten += count;
-		client.changed = true;
-		client.diff = count;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.GOTEVENTS;
+			client.eventsGotten += count;
+			client.changed = true;
+			client.diff = count;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientGetHeader(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.GOTHEADER;
-		client.changed = true;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.GOTHEADER;
+			client.changed = true;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientGetSamples(final int count, final int clientID,
 			final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.samplesGotten += count;
-		client.lastActivity = C.GOTSAMPLES;
-		client.changed = true;
-		client.diff = count;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.samplesGotten += count;
+			client.lastActivity = C.GOTSAMPLES;
+			client.changed = true;
+			client.diff = count;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientOpenedConnection(final int clientID, final String adress,
 			final long time) {
-		final ClientInfo client = new ClientInfo(adress, clientID, time);
-		clients.put(clientID, client);
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = new ClientInfo(adress, clientID, time);
+			clients.put(clientID, client);
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientPolls(final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.POLL;
-		client.changed = true;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.POLL;
+			client.changed = true;
+			change = true;
+		}
 	}
 
 	@Override
 	public void clientPutEvents(final int count, final int clientID,
 			final int diff, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.PUTEVENTS;
-		client.eventsPut += diff;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.PUTEVENTS;
+			client.eventsPut += diff;
+			client.changed = true;
+			client.diff = diff;
+		}
 		info.nEvents = count;
-		client.changed = true;
 		info.changed = true;
-		client.diff = diff;
 		change = true;
 	}
 
 	@Override
 	public void clientPutHeader(final int dataType, final float fSample,
 			final int nChannels, final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.PUTHEADER;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.PUTHEADER;
+			client.changed = true;
+		}
 		info.dataType = dataType;
 		info.fSample = fSample;
 		info.nChannels = nChannels;
-		client.changed = true;
 		info.changed = true;
 		change = true;
 	}
@@ -193,28 +218,32 @@ public class BufferMonitor extends Thread implements FieldtripBufferMonitor {
 	@Override
 	public void clientPutSamples(final int count, final int clientID,
 			final int diff, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.PUTSAMPLES;
-		client.samplesPut += diff;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.PUTSAMPLES;
+			client.samplesPut += diff;
+			client.diff = diff;
+			client.changed = true;
+		}
 		info.nSamples = count;
-		client.changed = true;
 		info.changed = true;
-		client.diff = diff;
 		change = true;
 	}
 
 	@Override
 	public void clientWaits(final int nSamples, final int nEvents,
 			final int timeout, final int clientID, final long time) {
-		final ClientInfo client = clients.get(clientID);
-		client.timeLastActivity = time;
-		client.lastActivity = C.WAIT;
-		client.waitSamples = nSamples;
-		client.waitEvents = nEvents;
-		client.waitTimeout = timeout;
-		client.changed = true;
-		change = true;
+		if (clientID != -1) {
+			final ClientInfo client = clients.get(clientID);
+			client.timeLastActivity = time;
+			client.lastActivity = C.WAIT;
+			client.waitSamples = nSamples;
+			client.waitEvents = nEvents;
+			client.waitTimeout = timeout;
+			client.changed = true;
+			change = true;
+		}
 	}
 
 	@Override

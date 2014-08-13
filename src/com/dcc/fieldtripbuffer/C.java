@@ -17,6 +17,10 @@ public final class C {
 
 	public static final int UPDATE_REQUEST = 0;
 	public static final int UPDATE = 1;
+	public static final int REQUEST_PUT_HEADER = 2;
+	public static final int REQUEST_FLUSH_HEADER = 3;
+	public static final int REQUEST_FLUSH_SAMPLES = 4;
+	public static final int REQUEST_FLUSH_EVENTS = 5;
 
 	public static final int BUFFER_INFO_PARCEL = 0;
 	public static final int CLIENT_INFO_PARCEL = 1;

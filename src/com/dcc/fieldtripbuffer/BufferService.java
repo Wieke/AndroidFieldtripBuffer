@@ -4,8 +4,10 @@ import java.util.Locale;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -15,8 +17,10 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import buffer_bci.javaserver.Buffer;
+
 import com.dcc.fieldtripbuffer.monitor.BufferMonitor;
 
 public class BufferService extends Service {
@@ -26,6 +30,27 @@ public class BufferService extends Service {
 	private WakeLock wakeLock;
 	private WifiLock wifiLock;
 
+	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+			switch (intent.getIntExtra(C.MESSAGE_TYPE, -1)) {
+			case C.REQUEST_PUT_HEADER:
+				buffer.putHeader(0, 0, 0);
+				break;
+			case C.REQUEST_FLUSH_HEADER:
+				buffer.flushHeader();
+				break;
+			case C.REQUEST_FLUSH_SAMPLES:
+				buffer.flushSamples();
+				break;
+			case C.REQUEST_FLUSH_EVENTS:
+				buffer.flushEvents();
+				break;
+			default:
+			}
+		}
+
+	};
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -50,6 +75,8 @@ public class BufferService extends Service {
 		if (wifiLock != null) {
 			wifiLock.release();
 		}
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(
+				mMessageReceiver);
 	}
 
 	@Override
@@ -87,9 +114,9 @@ public class BufferService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle(res.getString(R.string.notification_title))
-			.setContentText(notification_text);
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(res.getString(R.string.notification_title))
+					.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
@@ -120,6 +147,10 @@ public class BufferService extends Service {
 			// Turn this service into a foreground service
 			startForeground(1, mBuilder.build());
 			Log.i(C.TAG, "Fieldtrip Buffer Service moved to foreground.");
+
+			// Add message listener
+			LocalBroadcastManager.getInstance(this).registerReceiver(
+					mMessageReceiver, new IntentFilter(C.FILTER));
 		}
 		return START_NOT_STICKY;
 	}
