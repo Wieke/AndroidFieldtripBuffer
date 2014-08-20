@@ -1,22 +1,16 @@
 package com.dcc.fieldtripthreads.desktop;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
-import com.dcc.fieldtripthreads.thread.AndroidHandle;
-import com.dcc.fieldtripthreads.thread.Argument;
-import com.dcc.fieldtripthreads.thread.ThreadBase;
+import com.dcc.fieldtripthreads.base.AndroidHandle;
+import com.dcc.fieldtripthreads.base.Argument;
+import com.dcc.fieldtripthreads.base.ThreadBase;
 
 @SuppressWarnings({ "rawtypes" })
 public class TestingApplication implements AndroidHandle {
@@ -36,7 +30,7 @@ public class TestingApplication implements AndroidHandle {
 		}
 
 		String input = new BufferedReader(new InputStreamReader(System.in))
-		.readLine();
+				.readLine();
 
 		if (input.length() == 0) {
 			a.validate();
@@ -77,47 +71,16 @@ public class TestingApplication implements AndroidHandle {
 
 	}
 
-	private static Class[] loadClasses(final String pathToJar) {
+	private static Class[] loadClasses() {
 		ArrayList<Class> classes = new ArrayList<Class>();
-		File libs = new File(pathToJar);
-		try {
 
-			for (String e : libs.list()) {
-				URL[] urls = { new URL("jar:file:" + pathToJar + "/" + e + "!/") };
-				URLClassLoader classLoader = URLClassLoader.newInstance(urls);
-				Enumeration<JarEntry> entries = new JarFile("libs/" + e)
-				.entries();
-				while (entries.hasMoreElements()) {
-					JarEntry entry = entries.nextElement();
-					if (!entry.isDirectory()
-							&& !entry.getName().endsWith(".class")) {
-						continue;
-					}
-					String className = entry.getName().substring(0,
-							entry.getName().length() - 6);
-					className = className.replace('/', '.');
-					Class c = classLoader.loadClass(className);
-					Class superclass = c.getSuperclass();
-					while (superclass != null) {
-						if (superclass.getName() == "com.dcc.fieldtripthreads.thread.ThreadBase") {
-							classes.add(c);
-							break;
-						}
-						superclass = superclass.getSuperclass();
-					}
-				}
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 		return classes.toArray(new Class[classes.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void main(final String[] args) throws IOException,
-	ClassNotFoundException {
-		// DO DYNAMIC STUFF
-		Class[] classes = loadClasses("libs");
+			ClassNotFoundException {
+		Class[] classes = loadClasses();
 
 		System.out.println("Choose one:");
 		int n = 1;

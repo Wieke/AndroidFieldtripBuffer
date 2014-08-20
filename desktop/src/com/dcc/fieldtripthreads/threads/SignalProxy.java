@@ -1,4 +1,4 @@
-package com.dcc.fieldtripthreads.example;
+package com.dcc.fieldtripthreads.threads;
 
 import java.io.IOException;
 import java.util.Random;
@@ -6,9 +6,9 @@ import java.util.Random;
 import nl.fcdonders.fieldtrip.BufferClient;
 import nl.fcdonders.fieldtrip.Header;
 
-import com.dcc.fieldtripthreads.thread.AndroidHandle;
-import com.dcc.fieldtripthreads.thread.Argument;
-import com.dcc.fieldtripthreads.thread.ThreadBase;
+import com.dcc.fieldtripthreads.base.AndroidHandle;
+import com.dcc.fieldtripthreads.base.Argument;
+import com.dcc.fieldtripthreads.base.ThreadBase;
 
 public class SignalProxy extends ThreadBase {
 	private String adress;

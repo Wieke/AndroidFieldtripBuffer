@@ -1,4 +1,4 @@
-package com.dcc.fieldtripthreads.thread;
+package com.dcc.fieldtripthreads.base;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
