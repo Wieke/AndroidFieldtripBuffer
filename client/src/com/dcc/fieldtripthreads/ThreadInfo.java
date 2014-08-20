@@ -1,9 +1,7 @@
-package com.dcc.fieldtripthreads.thread;
+package com.dcc.fieldtripthreads;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.dcc.fieldtripthreads.C;
 
 public class ThreadInfo implements Parcelable {
 	public int threadID;

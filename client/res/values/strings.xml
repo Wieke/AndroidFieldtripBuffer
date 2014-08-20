@@ -8,5 +8,6 @@
 	<string name="notification_title">Fieldtrip Thread Service</string>
 	<string name="thread_service_name">Thread Service</string>
 	<string name="no_external_storage">No external storage availeble.</string>
+	<string name="pick_thread">Choose a thread</string>
 
 </resources>

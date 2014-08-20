@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dcc.fieldtripthreads.R;
-import com.dcc.fieldtripthreads.thread.ThreadInfo;
+import com.dcc.fieldtripthreads.ThreadInfo;
 
 public class ThreadListAdapter extends ArrayAdapter {
 	private final Context context;

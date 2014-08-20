@@ -1,8 +1,6 @@
 package com.dcc.fieldtripthreads.fragments;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +10,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.util.SparseArray;
@@ -21,13 +20,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.dcc.fieldtripthreads.C;
 import com.dcc.fieldtripthreads.R;
-import com.dcc.fieldtripthreads.thread.ThreadInfo;
-
-import dalvik.system.DexFile;
+import com.dcc.fieldtripthreads.ThreadInfo;
 
 public class ThreadManagementFragment extends Fragment {
 
@@ -58,34 +54,20 @@ public class ThreadManagementFragment extends Fragment {
 	OnClickListener launchThread = new OnClickListener() {
 		@Override
 		public void onClick(final View v) {
-			// Create Intent for stopping the buffer.
-			// final Intent intent = new Intent(getActivity(),
-			// ThreadService.class);
-			// Stop the buffer
-			// getActivity().stopService(intent);
-			if (isExternalStorageReadable()) {
+			// Create a fragment transaction
+			final FragmentTransaction transaction = getFragmentManager()
+					.beginTransaction();
 
-				String jardir = "Fieldtrip Threads";
-				DexFile df;
-				try {
-					df = new DexFile(getActivity().getPackageCodePath());
-					for (Enumeration<String> iter = df.entries(); iter
-							.hasMoreElements();) {
-						Log.w(C.TAG, iter.nextElement());
-					}
-				} catch (IOException e) {
-					Log.w(C.TAG, "IOEXCEPTION CAUGsadglj");
-					e.printStackTrace();
-				}
-
-			} else {
-				Resources res = getActivity().getResources();
-				Toast.makeText(getActivity(),
-						res.getString(R.string.no_external_storage),
-						Toast.LENGTH_SHORT).show();
-			}
+			transaction.replace(R.id.activity_main_container,
+					new ThreadChooser());
+			transaction
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			transaction.addToBackStack(null);
+			transaction.commit();
 		}
 	};
+
+	private Resources res;
 
 	/* Checks if external storage is available to at least read */
 	public boolean isExternalStorageReadable() {
@@ -115,6 +97,7 @@ public class ThreadManagementFragment extends Fragment {
 			threads = savedInstanceState
 					.getSparseParcelableArray(C.THREAD_LIST);
 		}
+		res = getActivity().getResources();
 		setHasOptionsMenu(true);
 	}
 

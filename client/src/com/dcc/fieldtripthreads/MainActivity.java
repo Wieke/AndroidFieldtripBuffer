@@ -12,9 +12,11 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new ThreadManagementFragment())
-					.commit();
+			getSupportFragmentManager()
+					.beginTransaction()
+					.add(R.id.activity_main_container,
+							new ThreadManagementFragment()).commit();
 		}
 	}
+
 }
