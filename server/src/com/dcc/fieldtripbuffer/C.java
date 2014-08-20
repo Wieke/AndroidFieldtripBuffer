@@ -9,7 +9,7 @@ import buffer_bci.javaserver.FieldtripBufferMonitor;
  *
  */
 public final class C {
-	public static final String FILTER = "com.dcc.fieldtripbuffer.RunningBufferFragment.filter";
+	public static final String FILTER = "com.dcc.fieldtripbuffer.filter";
 
 	public static final String MESSAGE_TYPE = "a";
 	public static final String BUFFER_INFO = "b";
@@ -47,7 +47,7 @@ public final class C {
 
 	public static final String TAG = "fieldtripbuffer";
 
-	public static final String WAKELOCKTAG = "com.dcc.fieldtripbuffer.RunningBufferFragment.wakelock";
+	public static final String WAKELOCKTAG = "com.dcc.fieldtripbuffer.wakelock";
 
-	public static final String WAKELOCKTAGWIFI = "com.dcc.fieldtripbuffer.RunningBufferFragment.wakelockwifi";
+	public static final String WAKELOCKTAGWIFI = "com.dcc.fieldtripbuffer.wakelockwifi";
 }
