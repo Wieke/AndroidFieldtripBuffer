@@ -140,29 +140,7 @@ public class ThreadService extends Service {
 			try {
 				base.mainloop();
 			} catch (Exception e) {
-				makeToast(base.getName() + " crashed!", Toast.LENGTH_LONG);
-				try {
-					if (isExternalStorageWritable()) {
-
-						PrintWriter writer = new PrintWriter(
-								new FileOutputStream(new File(Environment
-										.getExternalStorageDirectory(),
-										"Stack_trace_" + base.getName())));
-
-						e.printStackTrace(writer);
-						writer.flush();
-						makeToast("Stack trace written to " + "Stack_trace_"
-								+ base.getName(), Toast.LENGTH_LONG);
-
-					} else {
-
-						throw new IOException(
-								"Could not open external storage.");
-					}
-				} catch (IOException e1) {
-					makeToast("Failed to write stack trace!", Toast.LENGTH_LONG);
-				}
-
+				handleException(e, base);
 			}
 		}
 	}
@@ -206,6 +184,30 @@ public class ThreadService extends Service {
 	private Updater updater;
 
 	private final Handler handler = new Handler();
+
+	public void handleException(final Exception e, final ThreadBase base) {
+		makeToast(base.getName() + " crashed!", Toast.LENGTH_LONG);
+		try {
+			if (isExternalStorageWritable()) {
+
+				PrintWriter writer = new PrintWriter(new FileOutputStream(
+						new File(Environment.getExternalStorageDirectory(),
+								"Stack_trace_" + base.getName())));
+
+				e.printStackTrace(writer);
+				writer.flush();
+				makeToast(
+						"Stack trace written to " + "Stack_trace_"
+								+ base.getName(), Toast.LENGTH_LONG);
+
+			} else {
+
+				throw new IOException("Could not open external storage.");
+			}
+		} catch (IOException e1) {
+			makeToast("Failed to write stack trace!", Toast.LENGTH_LONG);
+		}
+	}
 
 	/* Checks if external storage is available to at least read */
 	public boolean isExternalStorageReadable() {
@@ -261,7 +263,11 @@ public class ThreadService extends Service {
 		}
 		for (int i = 0; i < threadInfo.size(); i++) {
 			int id = threadInfo.valueAt(i).threadID;
-			threads.get(id).stop();
+			try {
+				threads.get(id).stop();
+			} catch (Exception e) {
+				handleException(e, threads.get(id));
+			}
 		}
 
 		final Intent intent = new Intent(C.FILTER);
@@ -299,9 +305,9 @@ public class ThreadService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-			.setSmallIcon(R.drawable.ic_launcher)
-			.setContentTitle(res.getString(R.string.notification_title))
-			.setContentText(notification_text);
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(res.getString(R.string.notification_title))
+					.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
