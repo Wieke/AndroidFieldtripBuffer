@@ -69,7 +69,7 @@ public class ThreadArguments extends Fragment {
 			transaction.replace(R.id.activity_main_container,
 					new ThreadManager());
 			transaction
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			getFragmentManager().popBackStack(null,
 					FragmentManager.POP_BACK_STACK_INCLUSIVE);
 			getFragmentManager().popBackStack(null,
@@ -146,8 +146,10 @@ public class ThreadArguments extends Fragment {
 						buttons[i] = new CheckBox(getActivity());
 						buttons[i].setText(options[i]);
 						group.addView(buttons[i]);
-						if (checked[i]) {
-							buttons[i].toggle();
+						if (i < checked.length) {
+							if (checked[i]) {
+								buttons[i].toggle();
+							}
 						}
 					}
 					argumentViews.add(buttons);
