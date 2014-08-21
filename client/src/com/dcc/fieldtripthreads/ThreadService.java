@@ -233,7 +233,7 @@ public class ThreadService extends Service {
 			@Override
 			public void run() {
 				Toast.makeText(getApplicationContext(), message, duration)
-						.show();
+				.show();
 			}
 		};
 
@@ -305,9 +305,9 @@ public class ThreadService extends Service {
 
 			final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					this)
-					.setSmallIcon(R.drawable.ic_launcher)
-					.setContentTitle(res.getString(R.string.notification_title))
-					.setContentText(notification_text);
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setContentTitle(res.getString(R.string.notification_title))
+			.setContentText(notification_text);
 
 			// Creates an intent for when the notification is clicked
 			final Intent resultIntent = new Intent(this, MainActivity.class);
@@ -353,8 +353,12 @@ public class ThreadService extends Service {
 		try {
 
 			ThreadBase thread = (ThreadBase) c.newInstance();
-			thread.setArguments(arguments);
-			thread.setHandle(new Handle(this, nextId));
+			try {
+				thread.setArguments(arguments);
+				thread.setHandle(new Handle(this, nextId));
+			} catch (Exception e) {
+				handleException(e, thread);
+			}
 			threads.put(nextId, thread);
 			WrapperThread wrapper = new WrapperThread(thread);
 			wrappers.put(nextId, wrapper);
