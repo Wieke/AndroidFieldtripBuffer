@@ -6,16 +6,9 @@ import nl.fcdonders.fieldtrip.BufferClient;
 import nl.fcdonders.fieldtrip.Header;
 
 public abstract class ThreadBase {
+	protected boolean run = true;
 	protected AndroidHandle android;
 	protected Argument[] arguments;
-
-	public ThreadBase() {
-	};
-
-	public ThreadBase(final AndroidHandle android, final Argument[] arguments) {
-		this.android = android;
-		this.arguments = arguments;
-	}
 
 	protected boolean connect(final BufferClient client, final String adress,
 			final int port) throws IOException, InterruptedException {
@@ -45,9 +38,21 @@ public abstract class ThreadBase {
 
 	public abstract void mainloop();
 
-	public abstract void pause();;
+	public void pause() {
+		run = false;
+	}
 
-	public abstract void stop();
+	public void setArguments(final Argument[] arguments) {
+		this.arguments = arguments;
+	}
+
+	public void setHandle(final AndroidHandle android) {
+		this.android = android;
+	}
+
+	public void stop() {
+		run = false;
+	};
 
 	public abstract void validateArguments(final Argument[] arguments);
 

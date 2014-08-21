@@ -8,42 +8,11 @@ import nl.fcdonders.fieldtrip.BufferEvent;
 import nl.fcdonders.fieldtrip.Header;
 import nl.fcdonders.fieldtrip.SamplesEventsCount;
 
-import com.dcc.fieldtripthreads.base.AndroidHandle;
 import com.dcc.fieldtripthreads.base.Argument;
 import com.dcc.fieldtripthreads.base.ThreadBase;
 
 public class Toaster extends ThreadBase {
-	private String adress;
-	private int port;
-	private String eventType;
-	private boolean longMessage;
-	private boolean run = true;
-	private final BufferClient client = new BufferClient();
-	private Integer timeout;
-	private String path;
-
-	/**
-	 * Necessary constructor.
-	 */
-	public Toaster() {
-	}
-
-	/**
-	 * Necessary constructor.
-	 *
-	 * @param android
-	 * @param arguments
-	 */
-	public Toaster(final AndroidHandle android, final Argument[] arguments) {
-		super(android, arguments);
-		final String[] split = arguments[0].getString().split(":");
-		adress = split[0];
-		port = Integer.parseInt(split[1]);
-		eventType = arguments[1].getString();
-		longMessage = arguments[2].getSelected() == 1;
-		timeout = arguments[3].getInteger();
-		path = arguments[4].getString();
-	}
+	private BufferClient client;
 
 	/**
 	 * Is used by the android app to determine what kind of arguments the thread
@@ -77,10 +46,29 @@ public class Toaster extends ThreadBase {
 
 	/**
 	 * Is called from within the public void run() method of a Thread object.
+	 *
+	 * Before the mainloop is called, the arguments and android variables are
+	 * set through functions defined in ThreadBase.
+	 *
 	 */
 	@Override
 	public void mainloop() {
+
+		/**
+		 * While the validate arguments function may have already parsed some of
+		 * the arguments. It necessarily needs to happen here again because
+		 * mainloop() and validateArguments() will not be called on the same
+		 * instance of this class.
+		 */
+		final String[] split = arguments[0].getString().split(":");
+		String adress = split[0];
+		int port = Integer.parseInt(split[1]);
+		String eventType = arguments[1].getString();
+		boolean longMessage = arguments[2].getSelected() == 1;
+		Integer timeout = arguments[3].getInteger();
+		String path = arguments[4].getString();
 		run = true;
+
 		try {
 			/**
 			 * connect() is a convenience function defined in ThreadBase. It
@@ -152,20 +140,13 @@ public class Toaster extends ThreadBase {
 	}
 
 	/**
-	 * Not used at the moment.
-	 */
-	@Override
-	public void pause() {
-		run = false;
-	}
-
-	/**
 	 * Called when the thread needs to stop. (When the stop threads button is
-	 * pressed in the app.)
+	 * pressed in the app.) Is overriden so the buffer connection can be closed
+	 * neatly.
 	 */
 	@Override
 	public void stop() {
-		run = false;
+		super.stop();
 		try {
 			client.disconnect();
 		} catch (final IOException e) {

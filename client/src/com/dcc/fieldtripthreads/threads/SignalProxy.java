@@ -6,7 +6,6 @@ import java.util.Random;
 import nl.fcdonders.fieldtrip.BufferClient;
 import nl.fcdonders.fieldtrip.Header;
 
-import com.dcc.fieldtripthreads.base.AndroidHandle;
 import com.dcc.fieldtripthreads.base.Argument;
 import com.dcc.fieldtripthreads.base.ThreadBase;
 
@@ -19,20 +18,6 @@ public class SignalProxy extends ThreadBase {
 	private boolean run = true;
 	private final BufferClient client = new BufferClient();
 	Random generator;
-
-	public SignalProxy() {
-	}
-
-	public SignalProxy(final AndroidHandle android, final Argument[] arguments) {
-		super(android, arguments);
-		final String[] split = arguments[0].getString().split(":");
-		adress = split[0];
-		port = Integer.parseInt(split[1]);
-		nChannels = arguments[1].getInteger();
-		fSample = arguments[2].getDouble();
-		blockSize = arguments[3].getInteger();
-		generator = new Random();
-	}
 
 	private double[][] genData() {
 		double[][] data = new double[blockSize][nChannels];
@@ -66,6 +51,15 @@ public class SignalProxy extends ThreadBase {
 
 	@Override
 	public void mainloop() {
+
+		final String[] split = arguments[0].getString().split(":");
+		adress = split[0];
+		port = Integer.parseInt(split[1]);
+		nChannels = arguments[1].getInteger();
+		fSample = arguments[2].getDouble();
+		blockSize = arguments[3].getInteger();
+		generator = new Random();
+
 		run = true;
 		try {
 			if (!client.isConnected()) {
@@ -107,13 +101,8 @@ public class SignalProxy extends ThreadBase {
 	}
 
 	@Override
-	public void pause() {
-		run = false;
-	}
-
-	@Override
 	public void stop() {
-		run = false;
+		super.stop();
 		try {
 			client.disconnect();
 		} catch (final IOException e) {
