@@ -44,6 +44,9 @@ public class ThreadArguments extends Fragment {
 		@Override
 		public void onClick(final View arg0) {
 			updateArguments();
+			for (Argument a : arguments) {
+				a.validate();
+			}
 			thread.validateArguments(arguments);
 			updateWarnings();
 			for (Argument a : arguments) {
@@ -66,7 +69,7 @@ public class ThreadArguments extends Fragment {
 			transaction.replace(R.id.activity_main_container,
 					new ThreadManager());
 			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			getFragmentManager().popBackStack(null,
 					FragmentManager.POP_BACK_STACK_INCLUSIVE);
 			getFragmentManager().popBackStack(null,

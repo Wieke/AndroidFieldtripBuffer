@@ -22,9 +22,18 @@ public class Toaster extends ThreadBase {
 	private Integer timeout;
 	private String path;
 
+	/**
+	 * Necessary constructor.
+	 */
 	public Toaster() {
 	}
 
+	/**
+	 * Necessary constructor.
+	 *
+	 * @param android
+	 * @param arguments
+	 */
 	public Toaster(final AndroidHandle android, final Argument[] arguments) {
 		super(android, arguments);
 		final String[] split = arguments[0].getString().split(":");
@@ -36,6 +45,10 @@ public class Toaster extends ThreadBase {
 		path = arguments[4].getString();
 	}
 
+	/**
+	 * Is used by the android app to determine what kind of arguments the thread
+	 * requires.
+	 */
 	@Override
 	public Argument[] getArguments() {
 		final Argument[] arguments = new Argument[5];
@@ -54,25 +67,46 @@ public class Toaster extends ThreadBase {
 		return arguments;
 	}
 
+	/**
+	 * Is used by the android app to determine the name of the Class.
+	 */
 	@Override
 	public String getName() {
 		return "Toaster";
 	}
 
+	/**
+	 * Is called from within the public void run() method of a Thread object.
+	 */
 	@Override
 	public void mainloop() {
 		run = true;
 		try {
+			/**
+			 * connect() is a convenience function defined in ThreadBase. It
+			 * connects to the buffer if able and waits for the header. Returns
+			 * false if the buffer could not be reached at the specified
+			 * adress/port.
+			 */
 			if (!connect(client, adress, port)) {
 				android.updateStatus("Could not connect to buffer.");
 				run = false;
 				return;
 			}
 
+			/**
+			 * The status message will be shown in the list of threads in the
+			 * app.
+			 */
 			android.updateStatus("Waiting for events.");
 
 			Header hdr = client.getHeader();
 
+			/**
+			 * The openWriteFile() and openReadFile() functions can be used to
+			 * access files on the device's external storage (usually the
+			 * sdcard).
+			 */
 			PrintWriter floor = new PrintWriter(android.openWriteFile(path));
 			int nEventsOld = hdr.nEvents;
 
@@ -86,6 +120,14 @@ public class Toaster extends ThreadBase {
 							count.nEvents - 1);
 					for (BufferEvent e : events) {
 						if (e.getType().toString().contentEquals(eventType)) {
+							/**
+							 * The small feedback popups that are sometimes
+							 * shown at the botter/center of the screen on
+							 * android devices are called toast. Calling the
+							 * toast() or toastLong() methods will create such a
+							 * popup.
+							 *
+							 */
 							if (longMessage) {
 								android.toastLong(e.getValue().toString());
 							} else {
@@ -109,11 +151,18 @@ public class Toaster extends ThreadBase {
 		}
 	}
 
+	/**
+	 * Not used at the moment.
+	 */
 	@Override
 	public void pause() {
 		run = false;
 	}
 
+	/**
+	 * Called when the thread needs to stop. (When the stop threads button is
+	 * pressed in the app.)
+	 */
 	@Override
 	public void stop() {
 		run = false;
@@ -125,13 +174,18 @@ public class Toaster extends ThreadBase {
 		}
 	}
 
+	/**
+	 * Used by the android app to determine if the arguments given by the user
+	 * are okay. If an argument is wrong, call the invalidate() method with some
+	 * kind reason for the invalidation in as the argument, this message will be
+	 * shown in red next to the input fields.
+	 */
 	@Override
 	public void validateArguments(final Argument[] arguments) {
 		final String adress = arguments[0].getString();
 
 		try {
 			final String[] split = adress.split(":");
-			arguments[0].validate();
 			try {
 				Integer.parseInt(split[1]);
 			} catch (final NumberFormatException e) {
