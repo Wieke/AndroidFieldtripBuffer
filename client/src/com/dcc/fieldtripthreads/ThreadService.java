@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.io.PrintWriter;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -45,25 +44,6 @@ public class ThreadService extends Service {
 			this.threadID = threadID;
 		}
 
-		/* Checks if external storage is available to at least read */
-		public boolean isExternalStorageReadable() {
-			String state = Environment.getExternalStorageState();
-			if (Environment.MEDIA_MOUNTED.equals(state)
-					|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-				return true;
-			}
-			return false;
-		}
-
-		/* Checks if external storage is available for read and write */
-		public boolean isExternalStorageWritable() {
-			String state = Environment.getExternalStorageState();
-			if (Environment.MEDIA_MOUNTED.equals(state)) {
-				return true;
-			}
-			return false;
-		}
-
 		@Override
 		public FileInputStream openReadFile(final String path)
 				throws IOException {
@@ -88,26 +68,12 @@ public class ThreadService extends Service {
 
 		@Override
 		public void toast(final String message) {
-			Runnable r = new Runnable() {
-				@Override
-				public void run() {
-					Toast.makeText(getApplicationContext(), message,
-							Toast.LENGTH_SHORT).show();
-				}
-			};
-			handler.post(r);
+			makeToast(message, Toast.LENGTH_SHORT);
 		}
 
 		@Override
 		public void toastLong(final String message) {
-			Runnable r = new Runnable() {
-				@Override
-				public void run() {
-					Toast.makeText(getApplicationContext(), message,
-							Toast.LENGTH_LONG).show();
-				}
-			};
-			handler.post(r);
+			makeToast(message, Toast.LENGTH_LONG);
 		}
 
 		@Override
@@ -171,17 +137,44 @@ public class ThreadService extends Service {
 		@Override
 		public void run() {
 			Looper.prepare();
-			base.mainloop();
+			try {
+				base.mainloop();
+			} catch (Exception e) {
+				makeToast(base.getName() + " crashed!", Toast.LENGTH_LONG);
+				try {
+					if (isExternalStorageWritable()) {
+
+						PrintWriter writer = new PrintWriter(
+								new FileOutputStream(new File(Environment
+										.getExternalStorageDirectory(),
+										"Stack_trace_" + base.getName())));
+
+						e.printStackTrace(writer);
+						writer.flush();
+						makeToast("Stack trace written to " + "Stack_trace_"
+								+ base.getName(), Toast.LENGTH_LONG);
+
+					} else {
+
+						throw new IOException(
+								"Could not open external storage.");
+					}
+				} catch (IOException e1) {
+					makeToast("Failed to write stack trace!", Toast.LENGTH_LONG);
+				}
+
+			}
 		}
 	}
 
 	private final SparseArray<ThreadBase> threads = new SparseArray<ThreadBase>();
+
 	private final SparseArray<WrapperThread> wrappers = new SparseArray<WrapperThread>();
+
 	private final SparseArray<ThreadInfo> threadInfo = new SparseArray<ThreadInfo>();
+
 	private WakeLock wakeLock;
-
 	private WifiLock wifiLock;
-
 	private int nextId = 0;
 	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
@@ -209,8 +202,41 @@ public class ThreadService extends Service {
 		}
 
 	};
+
 	private Updater updater;
+
 	private final Handler handler = new Handler();
+
+	/* Checks if external storage is available to at least read */
+	public boolean isExternalStorageReadable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)
+				|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	/* Checks if external storage is available for read and write */
+	public boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	private void makeToast(final String message, final int duration) {
+		Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(getApplicationContext(), message, duration)
+						.show();
+			}
+		};
+
+		handler.post(r);
+	}
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -319,10 +345,10 @@ public class ThreadService extends Service {
 		Class c = ThreadList.list[index];
 
 		try {
-			Constructor constructor = c.getConstructor(AndroidHandle.class,
-					Argument[].class);
-			ThreadBase thread = (ThreadBase) constructor.newInstance(
-					new Handle(this, nextId), arguments);
+
+			ThreadBase thread = (ThreadBase) c.newInstance();
+			thread.setArguments(arguments);
+			thread.setHandle(new Handle(this, nextId));
 			threads.put(nextId, thread);
 			WrapperThread wrapper = new WrapperThread(thread);
 			wrappers.put(nextId, wrapper);
@@ -333,12 +359,10 @@ public class ThreadService extends Service {
 			wrapper.start();
 			nextId = nextId + 1;
 
-		} catch (NoSuchMethodException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.w(C.TAG, "Instantiation failed!");
+
 		}
 	}
-
 }

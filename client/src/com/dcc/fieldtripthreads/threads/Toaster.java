@@ -12,7 +12,7 @@ import com.dcc.fieldtripthreads.base.Argument;
 import com.dcc.fieldtripthreads.base.ThreadBase;
 
 public class Toaster extends ThreadBase {
-	private BufferClient client;
+	private final BufferClient client = new BufferClient();
 
 	/**
 	 * Is used by the android app to determine what kind of arguments the thread
@@ -149,6 +149,7 @@ public class Toaster extends ThreadBase {
 		super.stop();
 		try {
 			client.disconnect();
+
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
