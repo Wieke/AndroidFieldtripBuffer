@@ -69,7 +69,7 @@ public class ThreadArguments extends Fragment {
 			transaction.replace(R.id.activity_main_container,
 					new ThreadManager());
 			transaction
-					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 			getFragmentManager().popBackStack(null,
 					FragmentManager.POP_BACK_STACK_INCLUSIVE);
 			getFragmentManager().popBackStack(null,
@@ -117,6 +117,9 @@ public class ThreadArguments extends Fragment {
 							layout, false);
 					ToggleButton boolSwitch = (ToggleButton) argumentView
 							.findViewById(R.id.argument_togglebutton);
+					if (a.getBoolean()) {
+						boolSwitch.toggle();
+					}
 					argumentViews.add(boolSwitch);
 				} else if (type == Argument.TYPE_RADIO) {
 					argumentView = inflater.inflate(R.layout.argument_radio,
