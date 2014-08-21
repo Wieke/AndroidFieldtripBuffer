@@ -20,7 +20,7 @@
         android:textColor="@color/radboud_color" />
 
     <ToggleButton
-        android:id="@+id/argument_toggle"
+        android:id="@+id/argument_togglebutton"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

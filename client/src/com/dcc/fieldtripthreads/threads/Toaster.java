@@ -20,19 +20,52 @@ public class Toaster extends ThreadBase {
 	 */
 	@Override
 	public Argument[] getArguments() {
-		final Argument[] arguments = new Argument[5];
+		final Argument[] arguments = new Argument[7];
 
+		/**
+		 * Declares a string argument, presented as simple text field. This one
+		 * is gong to be parsed in validateArguments.
+		 */
 		arguments[0] = new Argument("Buffer Adress", "localhost:1972");
 
-		arguments[1] = new Argument(
-				"Triggering event type (value of the event will be shown in popup)",
-				"Toaster.toast");
+		/**
+		 * Declares another string argument.
+		 */
+		arguments[1] = new Argument("Triggering event type", "Toaster.toast");
 
+		/**
+		 * Declares an integer argument, but presented as single choice of a
+		 * group.
+		 */
 		final String[] options = { "long", "short" };
 		arguments[2] = new Argument("Toast duration", 0, options);
-		arguments[3] = new Argument("Timeout", 500, false);
 
-		arguments[4] = new Argument("File Path", "toastlist");
+		/**
+		 * Declares an array of boolean arguments, presented as a list of
+		 * checkboxes.
+		 */
+		final String[] content = { "type", "value", "sample", "offset",
+				"duration" };
+		final boolean[] defaultContent = { false, true, false, false, false,
+				false };
+		arguments[3] = new Argument("Toast content", defaultContent, content);
+
+		/**
+		 * Declares an integer argument, presented as a text field but options
+		 * are limited to numbers only. Double and unsigned options available.
+		 */
+		arguments[4] = new Argument("Timeout", 500, false);
+
+		/**
+		 * Declares a single boolean argument, presented as a toggle button.
+		 */
+		arguments[5] = new Argument("Save to file?", false);
+
+		/**
+		 * Another string argument.
+		 */
+		arguments[6] = new Argument("File Path", "toastlist");
+
 		return arguments;
 	}
 
@@ -65,8 +98,10 @@ public class Toaster extends ThreadBase {
 		int port = Integer.parseInt(split[1]);
 		String eventType = arguments[1].getString();
 		boolean longMessage = arguments[2].getSelected() == 1;
-		Integer timeout = arguments[3].getInteger();
-		String path = arguments[4].getString();
+		boolean[] content = arguments[3].getChecked();
+		Integer timeout = arguments[4].getInteger();
+		boolean save = arguments[5].getBoolean();
+		String path = arguments[6].getString();
 		run = true;
 
 		try {
@@ -95,7 +130,10 @@ public class Toaster extends ThreadBase {
 			 * access files on the device's external storage (usually the
 			 * sdcard).
 			 */
-			PrintWriter floor = new PrintWriter(android.openWriteFile(path));
+			PrintWriter floor = null;
+			if (save) {
+				floor = new PrintWriter(android.openWriteFile(path));
+			}
 			int nEventsOld = hdr.nEvents;
 
 			while (run) {
@@ -108,6 +146,34 @@ public class Toaster extends ThreadBase {
 							count.nEvents - 1);
 					for (BufferEvent e : events) {
 						if (e.getType().toString().contentEquals(eventType)) {
+							StringBuilder message = new StringBuilder("");
+							if (content[0]) {
+
+								message.append(e.getType().toString());
+							}
+
+							if (content[1]) {
+								message.append(", ");
+								message.append(e.getValue().toString());
+							}
+
+							if (content[2]) {
+								message.append(", ");
+
+								message.append(e.sample);
+							}
+
+							if (content[3]) {
+								message.append(", ");
+								message.append(e.offset);
+
+							}
+							if (content[4]) {
+								message.append(", ");
+								message.append(e.duration);
+
+							}
+
 							/**
 							 * The small feedback popups that are sometimes
 							 * shown at the botter/center of the screen on
@@ -117,14 +183,17 @@ public class Toaster extends ThreadBase {
 							 *
 							 */
 							if (longMessage) {
-								android.toastLong(e.getValue().toString());
+								android.toastLong(message.toString());
 							} else {
-								android.toast(e.getValue().toString());
+								android.toast(message.toString());
 							}
 							android.updateStatus("Last toast: "
-									+ e.getValue().toString());
-							floor.write(e.getValue().toString() + "\n");
-							floor.flush();
+									+ message.toString());
+							if (save && floor != null) {
+								floor.write(message.toString() + "\n");
+								floor.flush();
+							}
+
 						}
 					}
 

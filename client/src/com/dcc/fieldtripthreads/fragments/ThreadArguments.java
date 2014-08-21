@@ -115,8 +115,8 @@ public class ThreadArguments extends Fragment {
 				if (type == Argument.TYPE_BOOLEAN) {
 					argumentView = inflater.inflate(R.layout.argument_boolean,
 							layout, false);
-					ToggleButton boolSwitch = (ToggleButton) rootView
-							.findViewById(R.id.argument_toggle);
+					ToggleButton boolSwitch = (ToggleButton) argumentView
+							.findViewById(R.id.argument_togglebutton);
 					argumentViews.add(boolSwitch);
 				} else if (type == Argument.TYPE_RADIO) {
 					argumentView = inflater.inflate(R.layout.argument_radio,
@@ -196,6 +196,18 @@ public class ThreadArguments extends Fragment {
 
 		} catch (java.lang.InstantiationException | IllegalAccessException e) {
 			Log.e(C.TAG, "Failed to instantiate class in ThreadArguments!");
+
+			TextView title = (TextView) rootView
+					.findViewById(R.id.thread_argument_title);
+
+			title.setText(thread.getName() + "Could not instantiate "
+					+ res.getString(R.string.thread_argument_title));
+		} catch (Exception e) {
+			TextView title = (TextView) rootView
+					.findViewById(R.id.thread_argument_title);
+
+			title.setText(thread.getName() + "Wrong arguments received "
+					+ res.getString(R.string.thread_argument_title));
 		}
 
 		return rootView;

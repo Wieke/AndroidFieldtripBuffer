@@ -29,12 +29,33 @@ public class Argument implements Serializable {
 	private String invalidationMessage;
 	private String[] options;
 
+	/**
+	 * Creates an argument with a boolean value. Get the result with
+	 * getValueBoolean().
+	 *
+	 * @param description
+	 *            The text displayed above the toggle button.
+	 * @param value
+	 *            The default value.
+	 */
 	public Argument(final String description, final boolean value) {
 		setDescription(description);
 		type = TYPE_BOOLEAN;
 		setValue(value);
 	}
 
+	/**
+	 * Creates an argument with a series of boolean values (multiple choice of a
+	 * list). Get the result with getValueChecked().
+	 *
+	 * @param description
+	 *            Description, the text displayed above the list of check
+	 *            buttons.
+	 * @param value
+	 *            The default value. List should be the same size as options.
+	 * @param options
+	 *            The text for the list.
+	 */
 	public Argument(final String description, final boolean[] value,
 			final String[] options) {
 		setDescription(description);
@@ -43,6 +64,19 @@ public class Argument implements Serializable {
 		setValue(value);
 	}
 
+	/**
+	 *
+	 * Creates an argument with an double value. Get the result with
+	 * getValueDouble(). TextField is limited to the appropriate input.
+	 *
+	 * @param description
+	 *            Description, the text displayed above textfield.
+	 * @param value
+	 *            The default value.
+	 *
+	 * @param signed
+	 *            Should be true if the integer should be signed.
+	 */
 	public Argument(final String description, final double value,
 			final boolean signed) {
 		setDescription(description);
@@ -55,6 +89,19 @@ public class Argument implements Serializable {
 
 	}
 
+	/**
+	 *
+	 * Creates an argument with an integer value. Get the result with
+	 * getValueInteger(). TextField is limited to the appropriate input.
+	 *
+	 * @param description
+	 *            Description, the text displayed above textfield.
+	 * @param value
+	 *            The default value.
+	 *
+	 * @param signed
+	 *            Should be true if the integer should be signed.
+	 */
 	public Argument(final String description, final int value,
 			final boolean signed) {
 		setDescription(description);
@@ -67,6 +114,19 @@ public class Argument implements Serializable {
 
 	}
 
+	/**
+	 *
+	 * Creates an argument with an integer value (single choice of a list). Get
+	 * the result with getValueSelected() or getValueInteger().
+	 *
+	 * @param description
+	 *            Description, the text displayed above the list of
+	 *            radiobuttons.
+	 * @param value
+	 *            The default value. Index of the selected option.
+	 * @param options
+	 *            The text for the list.
+	 */
 	public Argument(final String description, final int value,
 			final String[] options) {
 		setDescription(description);
@@ -75,6 +135,16 @@ public class Argument implements Serializable {
 		setValue(value);
 	}
 
+	/**
+	 * Creats an argument with a string (textfield that can be filled). Get the
+	 * result with getValueString().TextField is limited to the appropriate
+	 * input.
+	 *
+	 * @param description
+	 *            Description, the text displayed above the textview.
+	 * @param value
+	 *            The default value.
+	 */
 	public Argument(final String description, final String value) {
 		setDescription(description);
 		type = TYPE_STRING;
@@ -171,9 +241,16 @@ public class Argument implements Serializable {
 		return type;
 	}
 
-	public void invalidate(final String message) {
+	/**
+	 * Declares the argument value to be invalid. Gui will be redrawn but with a
+	 * warning drawn in red above the entry widget.
+	 *
+	 * @param message
+	 *            The body of the warning.
+	 */
+	public void invalidate(final String warning) {
 		valid = false;
-		setInvalidationMessage(message);
+		setInvalidationMessage(warning);
 	}
 
 	public boolean isInvalid() {
@@ -216,6 +293,9 @@ public class Argument implements Serializable {
 		valueString = value;
 	}
 
+	/**
+	 * Argument will be declared valid.
+	 */
 	public void validate() {
 		valid = true;
 	}
