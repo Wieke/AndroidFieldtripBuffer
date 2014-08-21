@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
@@ -24,8 +23,9 @@ import android.widget.ListView;
 import com.dcc.fieldtripthreads.C;
 import com.dcc.fieldtripthreads.R;
 import com.dcc.fieldtripthreads.ThreadInfo;
+import com.dcc.fieldtripthreads.ThreadService;
 
-public class ThreadManagementFragment extends Fragment {
+public class ThreadManager extends Fragment {
 
 	private SparseArray<ThreadInfo> threads = new SparseArray<ThreadInfo>();
 
@@ -38,16 +38,15 @@ public class ThreadManagementFragment extends Fragment {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 			if (intent.getIntExtra(C.MESSAGE_TYPE, -1) == C.UPDATE) {
-				final ThreadInfo[] clientInfo = (ThreadInfo[]) intent
+				final ThreadInfo[] threadInfo = (ThreadInfo[]) intent
 						.getParcelableArrayExtra(C.THREAD_LIST);
 
-				if (clientInfo != null) {
+				if (threadInfo != null) {
 					Log.i(C.TAG, "Received Client Info.");
-					updateClients(clientInfo);
+					updateThreadInfo(threadInfo);
 				}
 
 			}
-
 		}
 	};
 
@@ -62,30 +61,32 @@ public class ThreadManagementFragment extends Fragment {
 					new ThreadChooser());
 			transaction
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			transaction.addToBackStack(null);
+			transaction.addToBackStack(C.THREAD_MANAGEMENT);
 			transaction.commit();
 		}
 	};
 
+	OnClickListener stopall = new OnClickListener() {
+		@Override
+		public void onClick(final View v) {
+			// Create a fragment transaction
+			final Intent intent = new Intent(getActivity(), ThreadService.class);
+			// Stop the buffer
+			getActivity().stopService(intent);
+			threads.clear();
+			threadsArray.clear();
+			adapter.clear();
+			adapter.notifyDataSetChanged();
+			serviceRunning = false;
+		}
+	};
+
 	private Resources res;
+	private boolean serviceRunning = true;
 
-	/* Checks if external storage is available to at least read */
-	public boolean isExternalStorageReadable() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)
-				|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			return true;
-		}
-		return false;
-	}
-
-	/* Checks if external storage is available for read and write */
-	public boolean isExternalStorageWritable() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			return true;
-		}
-		return false;
+	public boolean changed(final ThreadInfo old, final ThreadInfo newer) {
+		return old.running != newer.running || old.status != newer.status
+				|| old.title != newer.title;
 	}
 
 	@Override
@@ -131,7 +132,10 @@ public class ThreadManagementFragment extends Fragment {
 		threadlist.setAdapter(adapter);
 
 		((Button) rootView.findViewById(R.id.launchbutton))
-				.setOnClickListener(launchThread);
+		.setOnClickListener(launchThread);
+
+		((Button) rootView.findViewById(R.id.stop_threads))
+		.setOnClickListener(stopall);
 
 		return rootView;
 	}
@@ -162,17 +166,22 @@ public class ThreadManagementFragment extends Fragment {
 		super.onStop();
 	}
 
-	public void updateClients(final ThreadInfo[] clientinfo) {
-		for (final ThreadInfo client : clientinfo) {
-			if (threads.get(client.threadID) == null) {
-				threads.put(client.threadID, client);
-				threadsArray.add(client);
-			} else {
-				threads.get(client.threadID).update(client);
+	public void updateThreadInfo(final ThreadInfo[] clientinfo) {
+		if (serviceRunning) {
+			for (final ThreadInfo thread : clientinfo) {
+				if (threads.get(thread.threadID) == null) {
+					threads.put(thread.threadID, thread);
+					threadsArray.add(thread);
+				} else {
+					if (changed(threads.get(thread.threadID), thread)) {
+						threads.get(thread.threadID).update(thread);
+					}
+				}
 			}
+			Log.i(C.TAG,
+					"Updating Thread list "
+							+ Integer.toString(clientinfo.length));
+			adapter.notifyDataSetChanged();
 		}
-		Log.i(C.TAG,
-				"Updating Thread list " + Integer.toString(clientinfo.length));
-		adapter.notifyDataSetChanged();
 	}
 }

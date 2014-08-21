@@ -1,6 +1,7 @@
 package com.dcc.fieldtripthreads.threads;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import nl.fcdonders.fieldtrip.BufferClient;
 import nl.fcdonders.fieldtrip.BufferEvent;
@@ -19,6 +20,7 @@ public class Toaster extends ThreadBase {
 	private boolean run = true;
 	private final BufferClient client = new BufferClient();
 	private Integer timeout;
+	private String path;
 
 	public Toaster() {
 	}
@@ -31,11 +33,12 @@ public class Toaster extends ThreadBase {
 		eventType = arguments[1].getString();
 		longMessage = arguments[2].getSelected() == 1;
 		timeout = arguments[3].getInteger();
+		path = arguments[4].getString();
 	}
 
 	@Override
 	public Argument[] getArguments() {
-		final Argument[] arguments = new Argument[4];
+		final Argument[] arguments = new Argument[5];
 
 		arguments[0] = new Argument("Buffer Adress", "localhost:1972");
 
@@ -44,9 +47,10 @@ public class Toaster extends ThreadBase {
 				"Toaster.toast");
 
 		final String[] options = { "long", "short" };
-		arguments[2] = new Argument("Long toast?", 0, options);
-		arguments[3] = new Argument("Timeout", 500);
+		arguments[2] = new Argument("Toast duration", 0, options);
+		arguments[3] = new Argument("Timeout", 500, false);
 
+		arguments[4] = new Argument("File Path", "toastlist");
 		return arguments;
 	}
 
@@ -69,6 +73,7 @@ public class Toaster extends ThreadBase {
 
 			Header hdr = client.getHeader();
 
+			PrintWriter floor = new PrintWriter(android.openWriteFile(path));
 			int nEventsOld = hdr.nEvents;
 
 			while (run) {
@@ -86,6 +91,10 @@ public class Toaster extends ThreadBase {
 							} else {
 								android.toast(e.getValue().toString());
 							}
+							android.updateStatus("Last toast: "
+									+ e.getValue().toString());
+							floor.write(e.getValue().toString() + "\n");
+							floor.flush();
 						}
 					}
 
@@ -117,11 +126,12 @@ public class Toaster extends ThreadBase {
 	}
 
 	@Override
-	public boolean validateArguments(final Argument[] arguments) {
+	public void validateArguments(final Argument[] arguments) {
 		final String adress = arguments[0].getString();
 
 		try {
 			final String[] split = adress.split(":");
+			arguments[0].validate();
 			try {
 				Integer.parseInt(split[1]);
 			} catch (final NumberFormatException e) {
@@ -131,7 +141,6 @@ public class Toaster extends ThreadBase {
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			arguments[0].invalidate("Integer expected after colon.");
 		}
-		return true;
-	}
 
+	}
 }

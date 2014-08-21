@@ -49,6 +49,6 @@ public abstract class ThreadBase {
 
 	public abstract void stop();
 
-	public abstract boolean validateArguments(Argument[] arguments);
+	public abstract void validateArguments(final Argument[] arguments);
 
 }

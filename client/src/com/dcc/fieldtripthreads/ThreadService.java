@@ -1,5 +1,12 @@
 package com.dcc.fieldtripthreads;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -9,29 +16,201 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.SparseArray;
+import android.widget.Toast;
+
+import com.dcc.fieldtripthreads.base.AndroidHandle;
+import com.dcc.fieldtripthreads.base.Argument;
+import com.dcc.fieldtripthreads.base.ThreadBase;
+import com.dcc.fieldtripthreads.threads.ThreadList;
 
 public class ThreadService extends Service {
 
+	private class Handle implements AndroidHandle {
+		private final Context context;
+		private final int threadID;
+
+		public Handle(final Context context, final int threadID) {
+			this.context = context;
+			this.threadID = threadID;
+		}
+
+		/* Checks if external storage is available to at least read */
+		public boolean isExternalStorageReadable() {
+			String state = Environment.getExternalStorageState();
+			if (Environment.MEDIA_MOUNTED.equals(state)
+					|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+				return true;
+			}
+			return false;
+		}
+
+		/* Checks if external storage is available for read and write */
+		public boolean isExternalStorageWritable() {
+			String state = Environment.getExternalStorageState();
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public FileInputStream openReadFile(final String path)
+				throws IOException {
+			if (isExternalStorageReadable()) {
+				return new FileInputStream(new File(
+						Environment.getExternalStorageDirectory(), path));
+			} else {
+				throw new IOException("Could not open external storage.");
+			}
+		}
+
+		@Override
+		public FileOutputStream openWriteFile(final String path)
+				throws IOException {
+			if (isExternalStorageWritable()) {
+				return new FileOutputStream(new File(
+						Environment.getExternalStorageDirectory(), path));
+			} else {
+				throw new IOException("Could not open external storage.");
+			}
+		}
+
+		@Override
+		public void toast(final String message) {
+			Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(), message,
+							Toast.LENGTH_SHORT).show();
+				}
+			};
+			handler.post(r);
+		}
+
+		@Override
+		public void toastLong(final String message) {
+			Runnable r = new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(), message,
+							Toast.LENGTH_LONG).show();
+				}
+			};
+			handler.post(r);
+		}
+
+		@Override
+		public void updateStatus(final String status) {
+			synchronized (threadInfo) {
+				threadInfo.get(threadID).status = status;
+			}
+		}
+	}
+
+	private class Updater extends Thread {
+
+		private boolean run = true;
+		private final Context context;
+
+		public Updater(final Context context) {
+			this.context = context;
+		}
+
+		@Override
+		public void run() {
+			while (run) {
+				try {
+					Thread.sleep(1000);
+					sendUpdates();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		private void sendUpdates() {
+			final Intent intent = new Intent(C.FILTER);
+			intent.putExtra(C.MESSAGE_TYPE, C.UPDATE);
+
+			ThreadInfo[] p = new ThreadInfo[threadInfo.size()];
+
+			for (int i = 0; i < threadInfo.size(); i++) {
+				p[i] = threadInfo.valueAt(i);
+				p[i].running = wrappers.valueAt(i).isAlive();
+			}
+
+			intent.putExtra(C.THREAD_LIST, p);
+			LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+		}
+
+		public void stopUpdating() {
+			run = false;
+		}
+	}
+
+	private class WrapperThread extends Thread {
+
+		public final ThreadBase base;
+
+		public WrapperThread(final ThreadBase base) {
+			this.base = base;
+			setName(base.getName());
+		}
+
+		@Override
+		public void run() {
+			Looper.prepare();
+			base.mainloop();
+		}
+	}
+
+	private final SparseArray<ThreadBase> threads = new SparseArray<ThreadBase>();
+	private final SparseArray<WrapperThread> wrappers = new SparseArray<WrapperThread>();
+	private final SparseArray<ThreadInfo> threadInfo = new SparseArray<ThreadInfo>();
 	private WakeLock wakeLock;
+
 	private WifiLock wifiLock;
 
+	private int nextId = 0;
 	private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
+			int id;
 			switch (intent.getIntExtra(C.MESSAGE_TYPE, -1)) {
-
+			case C.THREAD_STOP:
+				id = intent.getIntExtra(C.THREAD_ID, -1);
+				if (id != -1) {
+					threads.get(id).stop();
+					threads.remove(id);
+					wrappers.remove(id);
+					threadInfo.remove(id);
+				}
+				break;
+			case C.THREAD_PAUSE:
+				id = intent.getIntExtra(C.THREAD_ID, -1);
+				threads.get(id).stop();
+				break;
+			case C.THREAD_START:
+				id = intent.getIntExtra(C.THREAD_ID, -1);
+				wrappers.get(id).start();
 			default:
 			}
 		}
 
 	};
+	private Updater updater;
+	private final Handler handler = new Handler();
 
 	@Override
 	public IBinder onBind(final Intent intent) {
@@ -51,6 +230,17 @@ public class ThreadService extends Service {
 		if (wifiLock != null) {
 			wifiLock.release();
 		}
+		if (updater != null) {
+			updater.stopUpdating();
+		}
+		for (int i = 0; i < threadInfo.size(); i++) {
+			int id = threadInfo.valueAt(i).threadID;
+			threads.get(id).stop();
+		}
+
+		final Intent intent = new Intent(C.FILTER);
+		intent.putExtra(C.MESSAGE_TYPE, C.SERVICE_STOPPED);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(
 				mMessageReceiver);
 	}
@@ -58,10 +248,10 @@ public class ThreadService extends Service {
 	@Override
 	public int onStartCommand(final Intent intent, final int flags,
 			final int startId) {
-		Log.i(C.TAG, "Buffer Thread Running");
-		// If no buffer is running.
-		if (wakeLock == null && wifiLock == null) {
 
+		if (wakeLock == null && wifiLock == null) {
+			updater = new Updater(this);
+			updater.start();
 			final int port = intent.getIntExtra("port", 1972);
 			// Get Wakelocks
 
@@ -109,6 +299,46 @@ public class ThreadService extends Service {
 			LocalBroadcastManager.getInstance(this).registerReceiver(
 					mMessageReceiver, new IntentFilter(C.FILTER));
 		}
+
+		startThread(intent);
 		return START_NOT_STICKY;
 	}
+
+	private void startThread(final Intent intent) {
+		int index = intent.getIntExtra(C.THREAD_INDEX, -1);
+
+		int nArgs = intent.getIntExtra(C.N_ARGUMENTS, 0);
+
+		Argument[] arguments = new Argument[nArgs];
+
+		for (int i = 0; i < nArgs; i++) {
+			arguments[i] = (Argument) intent
+					.getSerializableExtra(C.THREAD_ARGUMENTS + i);
+		}
+
+		Class c = ThreadList.list[index];
+
+		try {
+			Constructor constructor = c.getConstructor(AndroidHandle.class,
+					Argument[].class);
+			ThreadBase thread = (ThreadBase) constructor.newInstance(
+					new Handle(this, nextId), arguments);
+			threads.put(nextId, thread);
+			WrapperThread wrapper = new WrapperThread(thread);
+			wrappers.put(nextId, wrapper);
+
+			threadInfo.put(nextId, new ThreadInfo(nextId, wrapper.getName(),
+					"", true));
+
+			wrapper.start();
+			nextId = nextId + 1;
+
+		} catch (NoSuchMethodException | InstantiationException
+				| IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

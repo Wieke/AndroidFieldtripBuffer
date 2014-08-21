@@ -9,21 +9,23 @@ public class Argument implements Serializable {
 	 */
 	private static final long serialVersionUID = -5926084016803995901L;
 
-	public final static int TYPE_INTEGER = 0;
-	public final static int TYPE_DOUBLE = 1;
+	public final static int TYPE_INTEGER_SIGNED = 0;
+	public final static int TYPE_DOUBLE_SIGNED = 1;
 	public final static int TYPE_BOOLEAN = 2;
 	public final static int TYPE_STRING = 3;
 	public final static int TYPE_RADIO = 4;
 	public final static int TYPE_CHECK = 5;
+	public final static int TYPE_INTEGER_UNSIGNED = 6;
+	public final static int TYPE_DOUBLE_UNSIGNED = 7;
 
 	private String description;
 	private int valueInteger;
 	private double valueDouble;
 	private boolean valueBoolean;
 	private String valueString;
-	private int[] valueCheck;
+	private boolean[] valueCheck;
 	private final int type;
-	private boolean valid = false;
+	private boolean valid = true;
 	private String invalidationMessage;
 	private String[] options;
 
@@ -33,30 +35,42 @@ public class Argument implements Serializable {
 		setValue(value);
 	}
 
-	public Argument(final String description, final double value) {
+	public Argument(final String description, final boolean[] value,
+			final String[] options) {
 		setDescription(description);
-		type = TYPE_DOUBLE;
+		type = TYPE_CHECK;
+		setOptions(options);
 		setValue(value);
 	}
 
-	public Argument(final String description, final int value) {
+	public Argument(final String description, final double value,
+			final boolean signed) {
 		setDescription(description);
-		type = TYPE_INTEGER;
+		if (signed) {
+			type = TYPE_DOUBLE_SIGNED;
+		} else {
+			type = TYPE_DOUBLE_UNSIGNED;
+		}
 		setValue(value);
+
+	}
+
+	public Argument(final String description, final int value,
+			final boolean signed) {
+		setDescription(description);
+		if (signed) {
+			type = TYPE_INTEGER_SIGNED;
+		} else {
+			type = TYPE_INTEGER_UNSIGNED;
+		}
+		setValue(value);
+
 	}
 
 	public Argument(final String description, final int value,
 			final String[] options) {
 		setDescription(description);
 		type = TYPE_RADIO;
-		setOptions(options);
-		setValue(value);
-	}
-
-	public Argument(final String description, final int[] value,
-			final String[] options) {
-		setDescription(description);
-		type = TYPE_CHECK;
 		setOptions(options);
 		setValue(value);
 	}
@@ -75,7 +89,7 @@ public class Argument implements Serializable {
 		}
 	}
 
-	public int[] getChecked() {
+	public boolean[] getChecked() {
 		if (type == TYPE_CHECK) {
 			return valueCheck;
 		} else {
@@ -86,9 +100,11 @@ public class Argument implements Serializable {
 	public String getDefault() {
 		switch (type) {
 		case TYPE_RADIO:
-		case TYPE_INTEGER:
+		case TYPE_INTEGER_UNSIGNED:
+		case TYPE_INTEGER_SIGNED:
 			return Integer.toString(valueInteger);
-		case TYPE_DOUBLE:
+		case TYPE_DOUBLE_SIGNED:
+		case TYPE_DOUBLE_UNSIGNED:
 			return Double.toString(valueDouble);
 		case TYPE_BOOLEAN:
 			return Boolean.toString(valueBoolean);
@@ -97,7 +113,7 @@ public class Argument implements Serializable {
 		case TYPE_CHECK:
 			if (valueCheck.length > 0) {
 				StringBuilder string = new StringBuilder();
-				for (int i : valueCheck) {
+				for (boolean i : valueCheck) {
 					string.append(i + ", ");
 				}
 				return string.substring(0, string.length() - 3);
@@ -111,7 +127,7 @@ public class Argument implements Serializable {
 	}
 
 	public Double getDouble() {
-		if (type == TYPE_DOUBLE) {
+		if (type == TYPE_DOUBLE_UNSIGNED || type == TYPE_DOUBLE_UNSIGNED) {
 			return valueDouble;
 		} else {
 			return null;
@@ -119,7 +135,8 @@ public class Argument implements Serializable {
 	}
 
 	public Integer getInteger() {
-		if (type == TYPE_INTEGER) {
+		if (type == TYPE_INTEGER_UNSIGNED || type == TYPE_INTEGER_UNSIGNED
+				|| type == TYPE_RADIO) {
 			return valueInteger;
 		} else {
 			return null;
@@ -183,16 +200,16 @@ public class Argument implements Serializable {
 		valueBoolean = value;
 	}
 
+	public void setValue(final boolean[] value) {
+		valueCheck = value;
+	}
+
 	public void setValue(final double value) {
 		valueDouble = value;
 	}
 
 	public void setValue(final int value) {
 		valueInteger = value;
-	}
-
-	public void setValue(final int[] value) {
-		valueCheck = value;
 	}
 
 	public void setValue(final String value) {

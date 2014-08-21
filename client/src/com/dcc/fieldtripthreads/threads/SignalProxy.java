@@ -52,9 +52,9 @@ public class SignalProxy extends ThreadBase {
 
 		arguments[0] = new Argument("Buffer Adress", "localhost:1972");
 
-		arguments[1] = new Argument("Number of channels", 3);
-		arguments[2] = new Argument("Sampling frequency", 100.0);
-		arguments[3] = new Argument("Block size", 5);
+		arguments[1] = new Argument("Number of channels", 3, false);
+		arguments[2] = new Argument("Sampling frequency", 100.0, false);
+		arguments[3] = new Argument("Block size", 5, false);
 
 		return arguments;
 	}
@@ -123,11 +123,12 @@ public class SignalProxy extends ThreadBase {
 	}
 
 	@Override
-	public boolean validateArguments(final Argument[] arguments) {
+	public void validateArguments(final Argument[] arguments) {
 		final String adress = arguments[0].getString();
 
 		try {
 			final String[] split = adress.split(":");
+			arguments[0].validate();
 			try {
 				Integer.parseInt(split[1]);
 			} catch (final NumberFormatException e) {
@@ -137,7 +138,6 @@ public class SignalProxy extends ThreadBase {
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			arguments[0].invalidate("Integer expected after colon.");
 		}
-		return true;
 	}
 
 }

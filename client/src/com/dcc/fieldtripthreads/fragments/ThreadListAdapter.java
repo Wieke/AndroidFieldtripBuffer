@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dcc.fieldtripthreads.R;
@@ -45,8 +44,6 @@ public class ThreadListAdapter extends ArrayAdapter {
 
 		final TextView title = (TextView) view.findViewById(R.id.threadname);
 		final TextView status = (TextView) view.findViewById(R.id.threadstatus);
-		final ProgressBar progress = (ProgressBar) view
-				.findViewById(R.id.threadprogress);
 		final ImageButton button = (ImageButton) view
 				.findViewById(R.id.threadbutton);
 
@@ -54,11 +51,9 @@ public class ThreadListAdapter extends ArrayAdapter {
 		status.setText(thread.status);
 
 		if (thread.running) {
-			progress.setIndeterminate(true);
-			button.setImageDrawable(res.getDrawable(R.drawable.ic_action_pause));
-		} else {
-			progress.setIndeterminate(false);
 			button.setImageDrawable(res.getDrawable(R.drawable.ic_action_play));
+		} else {
+			button.setImageDrawable(res.getDrawable(R.drawable.ic_action_pause));
 		}
 
 		return view;

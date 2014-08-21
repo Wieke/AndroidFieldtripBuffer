@@ -9,7 +9,9 @@
         android:id="@+id/threadstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/threadbutton"
         android:layout_alignLeft="@+id/threadname"
+        android:layout_alignParentBottom="false"
         android:layout_alignRight="@+id/threadname"
         android:layout_below="@+id/threadname"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -18,24 +20,15 @@
         android:id="@+id/threadname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/threadprogress"
         android:layout_toRightOf="@+id/threadbutton"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <ProgressBar
-        android:id="@+id/threadprogress"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true" />
 
    <ImageButton
        android:id="@+id/threadbutton"
        android:layout_width="35dp"
-       android:layout_height="wrap_content"
-       android:layout_alignBottom="@id/threadstatus"
+       android:layout_height="45dp"
        android:layout_alignParentLeft="true"
        android:layout_alignParentTop="true"
        android:background="@null"

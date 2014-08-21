@@ -2,6 +2,7 @@ package com.dcc.fieldtripthreads.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.dcc.fieldtripthreads.C;
 import com.dcc.fieldtripthreads.R;
@@ -51,8 +51,18 @@ public class ThreadChooser extends Fragment {
 			@Override
 			public void onItemClick(final AdapterView<?> arg0, final View arg1,
 					final int position, final long arg3) {
-				Toast.makeText(getActivity(), Integer.toString(position),
-						Toast.LENGTH_SHORT).show();
+				Bundle bundle = new Bundle();
+				bundle.putInt(C.THREAD_INDEX, position);
+				ThreadArguments newFragment = new ThreadArguments();
+				newFragment.setArguments(bundle);
+				final FragmentTransaction transaction = getFragmentManager()
+						.beginTransaction();
+
+				transaction.replace(R.id.activity_main_container, newFragment);
+				transaction
+						.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+				transaction.addToBackStack(null);
+				transaction.commit();
 			}
 
 		});

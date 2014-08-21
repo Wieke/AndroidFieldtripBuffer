@@ -15,16 +15,36 @@
         android:id="@+id/threadlist"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1" >
-
+        android:layout_weight="1"
+        android:choiceMode="singleChoice" >
     </ListView>
 
-    <Button
-        android:id="@+id/launchbutton"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0"
-        android:text="@string/launchthread" />
+        android:layout_weight="0" >
+
+        <Button
+            android:id="@+id/launchbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="0"
+            android:text="@string/launchthread" />
+
+        <Button
+            android:id="@+id/stop_threads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/launchbutton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="right"
+            android:layout_weight="0"
+            android:text="@string/stop_all" />
+
+    </RelativeLayout>
 
 </LinearLayout>
